@@ -85,8 +85,8 @@ namespace ThisOtherThing.UI.ShapeUtils
 		[System.Serializable]
 		public class CutoutProperties
 		{
-			[MinAttribute(3)] public int Resolution = 4;
-			[MinAttribute(0.0f)] public float Radius = 1.0f;
+			[UnityEngine.Min(3)] public int Resolution = 4;
+			[UnityEngine.Min(0.0f)] public float Radius = 1.0f;
 			[Range(-3.141592f, 3.141592f)] public float RotationOffset = 0.0f;
 
 			public GeoUtils.UnitPositionData UnitPositionData = new GeoUtils.UnitPositionData();

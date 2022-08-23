@@ -5,12 +5,12 @@ using ThisOtherThing.Utils;
 
 namespace ThisOtherThing
 {
-	[CustomPropertyDrawer(typeof(MinAttribute))] 
+	[CustomPropertyDrawer(typeof(ThisOtherThing.Utils.MinAttribute))] 
 	public class MinDrawer : PropertyDrawer
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			MinAttribute attribute = (MinAttribute)base.attribute;
+			ThisOtherThing.Utils.MinAttribute attribute = (ThisOtherThing.Utils.MinAttribute)base.attribute;
 
 			switch (property.propertyType)
 			{

@@ -45,7 +45,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 			};
 
 			[Range(0.0f, Mathf.PI)] public float MaxAngle = 0.2f;
-			[MinAttribute(0.0f)] public float RoundingDistance = 0.0f;
+			[UnityEngine.Min(0.0f)] public float RoundingDistance = 0.0f;
 			public RoundingProperties CornerRounding = new RoundingProperties();
 
 			public bool ShowHandles = true;
@@ -87,10 +87,10 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 			public Vector2 Center = Vector2.zero;
 
-			[Min(1.0f)] public float Width = 10.0f;
-			[Min(1.0f)] public float Height = 10.0f;
+			[UnityEngine.Min(1.0f)] public float Width = 10.0f;
+			[UnityEngine.Min(1.0f)] public float Height = 10.0f;
 
-			[Min(1.0f)] public float Radius = 10.0f;
+			[UnityEngine.Min(1.0f)] public float Radius = 10.0f;
 
 			[Range(-1.0f, 1.0f)] public float Direction = 1.0f;
 
@@ -103,7 +103,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 			public float Length = 1.0f;
 			public float EndRadius = 0.0f;
-			[Min(2)] public int Resolution = 10;
+			[UnityEngine.Min(2)] public int Resolution = 10;
 			public bool CenterPoint = false;
 			public bool SkipLastPosition = false;
 
