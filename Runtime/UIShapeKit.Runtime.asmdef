@@ -1,0 +1,14 @@
+{
+    "name": "UIShapeKit.Runtime",
+    "rootNamespace": "UIShapeKit",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
