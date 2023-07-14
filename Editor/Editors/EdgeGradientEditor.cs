@@ -1,41 +1,43 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.UI;
+using UnityEngine;
+using EdgeGradient = UIShapeKit.Shapes.EdgeGradient;
 
-using EdgeGradient = ThisOtherThing.UI.Shapes.EdgeGradient;
-
-[CustomEditor(typeof(EdgeGradient))]
-[CanEditMultipleObjects]
-public class EdgeGradientEditor : GraphicEditor
+namespace UIShapeKit.Editor.Editors
 {
-	protected SerializedProperty materialProp;
-	protected SerializedProperty raycastTargetProp;
-
-	protected SerializedProperty propertiesProp;
-
-	protected override void OnEnable()
+	[CustomEditor(typeof(EdgeGradient))]
+	[CanEditMultipleObjects]
+	public class EdgeGradientEditor : GraphicEditor
 	{
-		materialProp = serializedObject.FindProperty("m_Material");
-		raycastTargetProp = serializedObject.FindProperty("m_RaycastTarget");
+		protected SerializedProperty materialProp;
+		protected SerializedProperty raycastTargetProp;
 
-		propertiesProp = serializedObject.FindProperty("Properties");
-	}
+		protected SerializedProperty propertiesProp;
 
-	protected override void OnDisable()
-	{
-		Tools.hidden = false;
-	}
+		protected override void OnEnable()
+		{
+			materialProp = serializedObject.FindProperty("m_Material");
+			raycastTargetProp = serializedObject.FindProperty("m_RaycastTarget");
 
-	public override void OnInspectorGUI()
-	{
-		serializedObject.Update();
+			propertiesProp = serializedObject.FindProperty("Properties");
+		}
 
-		EditorGUILayout.PropertyField(materialProp);
-		EditorGUILayout.PropertyField(raycastTargetProp);
-		EditorGUILayout.Space();
+		protected override void OnDisable()
+		{
+			Tools.hidden = false;
+		}
 
-		EditorGUILayout.PropertyField(propertiesProp, new GUIContent("Edges"), true);
+		public override void OnInspectorGUI()
+		{
+			serializedObject.Update();
 
-		serializedObject.ApplyModifiedProperties();
+			EditorGUILayout.PropertyField(materialProp);
+			EditorGUILayout.PropertyField(raycastTargetProp);
+			EditorGUILayout.Space();
+
+			EditorGUILayout.PropertyField(propertiesProp, new GUIContent("Edges"), true);
+
+			serializedObject.ApplyModifiedProperties();
+		}
 	}
 }

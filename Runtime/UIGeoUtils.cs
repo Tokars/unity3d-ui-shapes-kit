@@ -1,10 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
 
-using ThisOtherThing.Utils;
-
-namespace ThisOtherThing.UI
+namespace UIShapeKit
 {
 	public class GeoUtils
 	{
@@ -61,8 +57,8 @@ namespace ThisOtherThing.UI
 			}
 
 			public ResolutionType Resolution = ResolutionType.Calculated;
-			[Utils.MinNum(2)]public int FixedResolution = 10;
-			[Utils.MinNum(0.01f)]public float ResolutionMaxDistance = 4.0f;
+			[MinNum(2)]public int FixedResolution = 10;
+			[MinNum(0.01f)]public float ResolutionMaxDistance = 4.0f;
 
 			public int AdjustedResolution { private set; get; }
 			public bool MakeSharpCorner { private set; get; }
@@ -190,7 +186,7 @@ namespace ThisOtherThing.UI
 			public bool ShowShadows = true;
 
 			[Range(-1.0f, 1.0f)] public float Angle = 0.0f;
-			[Utils.MinNum(0.0f)] public float Distance = 0.0f;
+			[MinNum(0.0f)] public float Distance = 0.0f;
 			public ShadowProperties[] Shadows;
 
 			[HideInInspector] public Vector2 Offset = Vector2.zero;
@@ -225,7 +221,7 @@ namespace ThisOtherThing.UI
 
 			public Vector2 Offset = Vector2.zero;
 
-			[Utils.MinNum(0.0f)] public float Size = 5.0f;
+			[MinNum(0.0f)] public float Size = 5.0f;
 
 			[Range(0.0f, 1.0f)] public float Softness = 0.5f;
 		}

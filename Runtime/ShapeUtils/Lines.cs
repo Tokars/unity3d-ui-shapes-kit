@@ -2,10 +2,9 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using RoundingProperties = UIShapeKit.GeoUtils.RoundingProperties;
 
-using RoundingProperties = ThisOtherThing.UI.GeoUtils.RoundingProperties;
-
-namespace ThisOtherThing.UI.ShapeUtils
+namespace UIShapeKit.ShapeUtils
 {
 	public class Lines
 	{
@@ -39,11 +38,11 @@ namespace ThisOtherThing.UI.ShapeUtils
 			LineProperties lineProperties,
 			PointsList.PointListProperties pointListProperties,
 			Vector2 positionOffset,
-			UI.GeoUtils.OutlineProperties outlineProperties,
+			GeoUtils.OutlineProperties outlineProperties,
 			Color32 color,
 			Vector2 uv,
 			ref PointsList.PointsData pointsData,
-			ThisOtherThing.UI.GeoUtils.EdgeGradientData edgeGradientData
+			GeoUtils.EdgeGradientData edgeGradientData
 		) {
 			pointListProperties.SetPoints();
 			pointsData.IsClosed = lineProperties.Closed && pointListProperties.Positions.Length > 2;
@@ -101,7 +100,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPos.y = positionOffset.y + pointsData.Positions[0].y + pointsData.PositionNormals[0].y * innerOffset + pointsData.StartCapOffset.y * capOffsetAmount;
 			}
 
-			vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			uv.y = 1.0f;
 
@@ -110,7 +109,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPos.y = positionOffset.y + pointsData.Positions[0].y + pointsData.PositionNormals[0].y * outerOffset + pointsData.StartCapOffset.y * capOffsetAmount;
 			}
 
-			vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			for (int i = 1; i < pointsData.NumPositions - 1; i++)
 			{
@@ -122,7 +121,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 					tmpPos.y = positionOffset.y + pointsData.Positions[i].y + pointsData.PositionNormals[i].y * innerOffset;
 				}
 
-				vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				uv.y = 1.0f;
 
@@ -131,7 +130,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 					tmpPos.y = positionOffset.y + pointsData.Positions[i].y + pointsData.PositionNormals[i].y * outerOffset;
 				}
 
-				vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				baseIndex = startVertex + i * 2;
 				vh.AddTriangle(baseIndex - 1, baseIndex, baseIndex + 1);
@@ -148,7 +147,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPos.y = positionOffset.y + pointsData.Positions[endIndex].y + pointsData.PositionNormals[endIndex].y * innerOffset + pointsData.EndCapOffset.y * capOffsetAmount;
 			}
 
-			vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			uv.y = 1.0f;
 
@@ -157,7 +156,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPos.y = positionOffset.y + pointsData.Positions[endIndex].y + pointsData.PositionNormals[endIndex].y * outerOffset + pointsData.EndCapOffset.y * capOffsetAmount;
 			}
 
-			vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			baseIndex = startVertex + endIndex * 2;
 			vh.AddTriangle(baseIndex - 1, baseIndex, baseIndex + 1);
@@ -173,7 +172,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 					tmpPos.y = positionOffset.y + pointsData.Positions[0].y + pointsData.PositionNormals[0].y * innerOffset + pointsData.StartCapOffset.y * capOffsetAmount;
 				}
 
-				vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				uv.y = 1.0f;
 
@@ -182,7 +181,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 					tmpPos.y = positionOffset.y + pointsData.Positions[0].y + pointsData.PositionNormals[0].y * outerOffset + pointsData.StartCapOffset.y * capOffsetAmount;
 				}
 
-				vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				baseIndex = startVertex + endIndex * 2 + 2;
 				vh.AddTriangle(baseIndex - 1, baseIndex, baseIndex + 1);
@@ -214,7 +213,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 					tmpPos.y = positionOffset.y + pointsData.Positions[0].y + pointsData.PositionNormals[0].y * innerOffset;
 				}
 
-				vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				uv.y = 1.0f;
 
@@ -223,7 +222,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 					tmpPos.y = positionOffset.y + pointsData.Positions[0].y + pointsData.PositionNormals[0].y * outerOffset;
 				}
 
-				vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				for (int i = 1; i < pointsData.NumPositions; i++)
 				{
@@ -235,7 +234,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 						tmpPos.y = positionOffset.y + pointsData.Positions[i].y + pointsData.PositionNormals[i].y * innerOffset;
 					}
 
-					vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 					uv.y = 1.0f;
 
@@ -244,7 +243,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 						tmpPos.y = positionOffset.y + pointsData.Positions[i].y + pointsData.PositionNormals[i].y * outerOffset;
 					}
 
-					vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 					// inner quad
 					vh.AddTriangle(startVertex + i * 2 - 1, startVertex + i * 2 + 1, outerBaseIndex + i * 2);
@@ -267,7 +266,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 						tmpPos.y = positionOffset.y + pointsData.Positions[0].y + pointsData.PositionNormals[0].y * innerOffset;
 					}
 
-					vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 					uv.y = 1.0f;
 
@@ -276,7 +275,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 						tmpPos.y = positionOffset.y + pointsData.Positions[0].y + pointsData.PositionNormals[0].y * outerOffset;
 					}
 
-					vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 					// inner quad
 					vh.AddTriangle(startVertex + lastIndex * 2 - 1, startVertex + lastIndex * 2 + 1, outerBaseIndex + lastIndex * 2);
@@ -325,13 +324,13 @@ namespace ThisOtherThing.UI.ShapeUtils
 			ref VertexHelper vh,
 			LineProperties lineProperties,
 			Vector2 positionOffset,
-			UI.GeoUtils.OutlineProperties outlineProperties,
+			GeoUtils.OutlineProperties outlineProperties,
 			Color32 color,
 			Vector2 uv,
 			float uvXMin,
 			float uvXLength,
 			PointsList.PointsData pointsData,
-			ThisOtherThing.UI.GeoUtils.EdgeGradientData edgeGradientData
+			GeoUtils.EdgeGradientData edgeGradientData
 		) {
 			int currentVertCount = vh.currentVertCount;
 			int startIndex = currentVertCount - pointsData.NumPositions * 2;
@@ -413,13 +412,13 @@ namespace ThisOtherThing.UI.ShapeUtils
 			ref VertexHelper vh,
 			LineProperties lineProperties,
 			Vector2 positionOffset,
-			UI.GeoUtils.OutlineProperties outlineProperties,
+			GeoUtils.OutlineProperties outlineProperties,
 			Color32 color,
 			Vector2 uv,
 			float uvXMin,
 			float uvXLength,
 			PointsList.PointsData pointsData,
-			ThisOtherThing.UI.GeoUtils.EdgeGradientData edgeGradientData
+			GeoUtils.EdgeGradientData edgeGradientData
 		) {
 			int currentVertCount = vh.currentVertCount;
 			int startIndex = currentVertCount;
@@ -526,11 +525,11 @@ namespace ThisOtherThing.UI.ShapeUtils
 			Vector2 capOffset,
 			int invertIndices,
 			LineProperties lineProperties,
-			UI.GeoUtils.OutlineProperties outlineProperties,
+			GeoUtils.OutlineProperties outlineProperties,
 			Color32 color,
 			Vector2 uv,
 			PointsList.PointsData pointsData,
-			ThisOtherThing.UI.GeoUtils.EdgeGradientData edgeGradientData,
+			GeoUtils.EdgeGradientData edgeGradientData,
 			int currentVertCount
 		) {
 			if (edgeGradientData.IsActive)
@@ -551,7 +550,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 					tmpPos.y = position.y + normal.y * innerOffset + capOffset.y * capOffsetAmount;
 				}
 
-				vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				uv.y = 1.0f;
 
@@ -560,7 +559,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 					tmpPos.y = position.y + normal.y * outerOffset + capOffset.y * capOffsetAmount;
 				}
 
-				vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				vh.AddTriangle(firstVertIndex, baseIndex + invertIndices, baseIndex + 1 - invertIndices);
 				vh.AddTriangle(firstVertIndex + invertIndices, baseIndex + 1, firstVertIndex + 1 - invertIndices);
@@ -589,11 +588,11 @@ namespace ThisOtherThing.UI.ShapeUtils
 			Vector2 capOffset,
 			int invertIndices,
 			LineProperties lineProperties,
-			UI.GeoUtils.OutlineProperties outlineProperties,
+			GeoUtils.OutlineProperties outlineProperties,
 			Color32 color,
 			Vector2 uv,
 			PointsList.PointsData pointsData,
-			ThisOtherThing.UI.GeoUtils.EdgeGradientData edgeGradientData,
+			GeoUtils.EdgeGradientData edgeGradientData,
 			int currentVertCount
 		) {
 			int baseIndex = currentVertCount;
@@ -620,7 +619,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 			}
 
 			uv.y = 0.0f;
-			vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			{
 				tmpPos.x = position.x + normal.x * outerOffset + capOffset.x * capOffsetAmount;
@@ -628,7 +627,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 			}
 
 			uv.y = 1.0f;
-			vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			vh.AddTriangle(firstVertIndex, baseIndex + invertIndices, baseIndex + 1 - invertIndices);
 			vh.AddTriangle(firstVertIndex + invertIndices, baseIndex + 1, firstVertIndex + 1 - invertIndices);
@@ -648,7 +647,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				}
 
 				uv.y = 0.0f;
-				vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 
 				{
@@ -657,7 +656,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				}
 
 				uv.y = 1.0f;
-				vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				int antiAliasedIndex = firstVertIndex + pointsData.NumPositions * 2;
 				baseIndex += 2;
@@ -696,11 +695,11 @@ namespace ThisOtherThing.UI.ShapeUtils
 			Vector2 capOffset,
 			int invertIndices,
 			LineProperties lineProperties,
-			UI.GeoUtils.OutlineProperties outlineProperties,
+			GeoUtils.OutlineProperties outlineProperties,
 			Color32 color,
 			Vector2 uv,
 			PointsList.PointsData pointsData,
-			ThisOtherThing.UI.GeoUtils.EdgeGradientData edgeGradientData,
+			GeoUtils.EdgeGradientData edgeGradientData,
 			Vector2[] capOffsets,
 			Vector2[] uvOffsets,
 			float uvXMin,
@@ -747,7 +746,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				}
 				uv.y = uvOffsets[i].y;
 
-				vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				if (i > 0)
 				{
@@ -814,7 +813,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 					}
 					uv.y = uvOffsets[i].y;
 
-					vh.AddVert(tmpPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					vh.AddVert(tmpPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 					if (i > 0)
 					{

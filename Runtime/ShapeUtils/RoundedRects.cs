@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using RoundedCornerProperties = UIShapeKit.GeoUtils.RoundingProperties;
 
-using RoundedCornerProperties = ThisOtherThing.UI.GeoUtils.RoundingProperties;
-
-namespace ThisOtherThing.UI.ShapeUtils
+namespace UIShapeKit.ShapeUtils
 {
 	public class RoundedRects
 	{
@@ -213,7 +212,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 			Color32 color,
 			Vector2 uv,
 			ref RoundedCornerUnitPositionData cornerUnitPositions,
-			UI.GeoUtils.EdgeGradientData edgeGradientData
+			GeoUtils.EdgeGradientData edgeGradientData
 		) {
 
 			if (roundedProperties.Type == RoundedProperties.RoundedType.None)
@@ -241,7 +240,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 			tmpUV.x = 0.5f;
 			tmpUV.y = 0.5f;
 
-			vh.AddVert(center, color, tmpUV, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(center, color, tmpUV, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			float sizeSub = Mathf.Min(height, width);
 			sizeSub *= 1.0f - edgeGradientData.InnerScale;
@@ -315,12 +314,12 @@ namespace ThisOtherThing.UI.ShapeUtils
 			Vector2 center,
 			float width,
 			float height,
-			UI.GeoUtils.OutlineProperties outlineProperties,
+			GeoUtils.OutlineProperties outlineProperties,
 			RoundedProperties roundedProperties,
 			Color32 color,
 			Vector2 uv,
 			ref RoundedCornerUnitPositionData cornerUnitPositions,
-			UI.GeoUtils.EdgeGradientData edgeGradientData
+			GeoUtils.EdgeGradientData edgeGradientData
 		) {
 			float fullWidth = width + outlineProperties.GetOuterDistace() * 2.0f;
 			float fullHeight = height + outlineProperties.GetOuterDistace() * 2.0f;
@@ -516,7 +515,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpUV.x = (tmpPos.x - xMinUV) / fullWidth;
 				tmpUV.y = (tmpPos.y - yMinUV) / fullHeight;
 
-				vh.AddVert(tmpPos, color, tmpUV, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPos, color, tmpUV, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 			}
 
 			// BR
@@ -540,7 +539,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpUV.x = (tmpPos.x - xMinUV) / fullWidth;
 				tmpUV.y = (tmpPos.y - yMinUV) / fullHeight;
 
-				vh.AddVert(tmpPos, color, tmpUV, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPos, color, tmpUV, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 			}
 
 			// BL
@@ -564,7 +563,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpUV.x = (tmpPos.x - xMinUV) / fullWidth;
 				tmpUV.y = (tmpPos.y - yMinUV) / fullHeight;
 
-				vh.AddVert(tmpPos, color, tmpUV, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPos, color, tmpUV, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 			}
 
 			// TL
@@ -588,7 +587,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpUV.x = (tmpPos.x - xMinUV) / fullWidth;
 				tmpUV.y = (tmpPos.y - yMinUV) / fullHeight;
 
-				vh.AddVert(tmpPos, color, tmpUV, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPos, color, tmpUV, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 			}
 
 
@@ -600,7 +599,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 			tmpUV.x = (tmpPos.x - xMinUV) / fullWidth;
 			tmpUV.y = (tmpPos.y - yMinUV) / fullHeight;
 
-			vh.AddVert(tmpPos, color, tmpUV, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(tmpPos, color, tmpUV, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 
 			if (addIndices)

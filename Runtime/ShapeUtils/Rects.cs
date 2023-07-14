@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace ThisOtherThing.UI.ShapeUtils
+namespace UIShapeKit.ShapeUtils
 {
 	public class Rects
 	{
@@ -35,7 +35,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 			float width,
 			float height,
 			Color32 color,
-			ThisOtherThing.UI.GeoUtils.EdgeGradientData edgeGradientData
+			GeoUtils.EdgeGradientData edgeGradientData
 		) {
 			width += edgeGradientData.ShadowOffset * 2.0f;
 			height += edgeGradientData.ShadowOffset * 2.0f;
@@ -58,7 +58,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 			{
 				color.a  = 0;
 
-				UI.GeoUtils.AddOffset(
+				GeoUtils.AddOffset(
 					ref width,
 					ref height,
 					edgeGradientData.SizeAdd
@@ -79,13 +79,13 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 		public static void AddRectRing(
 			ref VertexHelper vh,
-			UI.GeoUtils.OutlineProperties OutlineProperties,
+			GeoUtils.OutlineProperties OutlineProperties,
 			Vector2 center,
 			float width,
 			float height,
 			Color32 color,
 			Vector2 uv,
-			ThisOtherThing.UI.GeoUtils.EdgeGradientData edgeGradientData
+			GeoUtils.EdgeGradientData edgeGradientData
 		) {
 			byte alpha = color.a;
 
@@ -174,22 +174,22 @@ namespace ThisOtherThing.UI.ShapeUtils
 			tmpPos.y = center.y + height * 0.5f;
 			tmpUVPos.x = uvXInset;
 			tmpUVPos.y = 1.0f - uvYInset;
-			vh.AddVert(tmpPos, color, tmpUVPos, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(tmpPos, color, tmpUVPos, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			// TR
 			tmpPos.x += width;
 			tmpUVPos.x = 1.0f - uvXInset;
-			vh.AddVert(tmpPos, color, tmpUVPos, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(tmpPos, color, tmpUVPos, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			// BR
 			tmpPos.y -= height;
 			tmpUVPos.y = uvYInset;
-			vh.AddVert(tmpPos, color, tmpUVPos, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(tmpPos, color, tmpUVPos, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			// BL
 			tmpPos.x -= width;
 			tmpUVPos.x = uvXInset;
-			vh.AddVert(tmpPos, color, tmpUVPos, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(tmpPos, color, tmpUVPos, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			if (addRingIndices)
 			{
@@ -229,10 +229,10 @@ namespace ThisOtherThing.UI.ShapeUtils
 		) {
 			int numVertices = vh.currentVertCount;
 
-			vh.AddVert(topLeft, topColor, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent); // TL
-			vh.AddVert(topLeft + UI.GeoUtils.RightV3 * width, topColor, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent); // TR
-			vh.AddVert(topLeft + UI.GeoUtils.DownV3 * height, bottomColor, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent); // BL
-			vh.AddVert(topLeft + UI.GeoUtils.RightV3 * width + UI.GeoUtils.DownV3 * height, bottomColor, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent); // BR
+			vh.AddVert(topLeft, topColor, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent); // TL
+			vh.AddVert(topLeft + GeoUtils.RightV3 * width, topColor, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent); // TR
+			vh.AddVert(topLeft + GeoUtils.DownV3 * height, bottomColor, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent); // BL
+			vh.AddVert(topLeft + GeoUtils.RightV3 * width + GeoUtils.DownV3 * height, bottomColor, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent); // BR
 
 			vh.AddTriangle(numVertices, numVertices + 1, numVertices + 2);
 			vh.AddTriangle(numVertices + 2, numVertices + 1, numVertices + 3);
@@ -249,10 +249,10 @@ namespace ThisOtherThing.UI.ShapeUtils
 		) {
 			int numVertices = vh.currentVertCount;
 
-			vh.AddVert(topLeft, leftColor, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent); // TL
-			vh.AddVert(topLeft + UI.GeoUtils.RightV3 * width, rightColor, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent); // TR
-			vh.AddVert(topLeft + UI.GeoUtils.DownV3 * height, leftColor, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent); // BL
-			vh.AddVert(topLeft + UI.GeoUtils.RightV3 * width + UI.GeoUtils.DownV3 * height, rightColor, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent); // BR
+			vh.AddVert(topLeft, leftColor, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent); // TL
+			vh.AddVert(topLeft + GeoUtils.RightV3 * width, rightColor, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent); // TR
+			vh.AddVert(topLeft + GeoUtils.DownV3 * height, leftColor, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent); // BL
+			vh.AddVert(topLeft + GeoUtils.RightV3 * width + GeoUtils.DownV3 * height, rightColor, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent); // BR
 
 
 			vh.AddTriangle(numVertices, numVertices + 1, numVertices + 2);

@@ -1,96 +1,98 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
+using PolygonProperties = UIShapeKit.ShapeUtils.Polygons.PolygonProperties;
 
-using PolygonProperties = ThisOtherThing.UI.ShapeUtils.Polygons.PolygonProperties;
-
-[CustomPropertyDrawer(typeof(PolygonProperties))]
-public class PolygonPropertiesDrawer : PropertyDrawer
+namespace UIShapeKit.Editor.CustomDrawers
 {
-	public override void OnGUI (Rect position, SerializedProperty property, GUIContent label)
+	[CustomPropertyDrawer(typeof(PolygonProperties))]
+	public class PolygonPropertiesDrawer : PropertyDrawer
 	{
-		position.height = EditorGUIUtility.singleLineHeight;
-		property.isExpanded = EditorGUI.Foldout(position, property.isExpanded, label);
-
-		if (!property.isExpanded)
+		public override void OnGUI (Rect position, SerializedProperty property, GUIContent label)
 		{
-			return;
-		}
+			position.height = EditorGUIUtility.singleLineHeight;
+			property.isExpanded = EditorGUI.Foldout(position, property.isExpanded, label);
 
-		EditorGUI.BeginProperty(position, label, property);
+			if (!property.isExpanded)
+			{
+				return;
+			}
 
-		PolygonProperties polygonProperties = 
-			(PolygonProperties)fieldInfo.GetValue(property.serializedObject.targetObject);
+			EditorGUI.BeginProperty(position, label, property);
 
-		var indent = EditorGUI.indentLevel;
-		EditorGUI.indentLevel = 1;
+			PolygonProperties polygonProperties = 
+				(PolygonProperties)fieldInfo.GetValue(property.serializedObject.targetObject);
 
-		Rect propertyPosition = new Rect (position.x, position.y + EditorGUIUtility.singleLineHeight, position.width, EditorGUIUtility.singleLineHeight);
+			var indent = EditorGUI.indentLevel;
+			EditorGUI.indentLevel = 1;
 
-		EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative("CenterType"), new GUIContent("Center Mode"));
-		propertyPosition.y += EditorGUIUtility.singleLineHeight * 1.25f;
+			Rect propertyPosition = new Rect (position.x, position.y + EditorGUIUtility.singleLineHeight, position.width, EditorGUIUtility.singleLineHeight);
 
-		switch (polygonProperties.CenterType)
-		{
-			case PolygonProperties.CenterTypes.CustomPosition:
-				EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative("CustomCenter"), new GUIContent("Custom Center"));
-				break;
+			EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative("CenterType"), new GUIContent("Center Mode"));
+			propertyPosition.y += EditorGUIUtility.singleLineHeight * 1.25f;
 
-			case PolygonProperties.CenterTypes.Offset:
-				EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative("CenterOffset"), new GUIContent("Offset"));
-				break;
+			switch (polygonProperties.CenterType)
+			{
+				case PolygonProperties.CenterTypes.CustomPosition:
+					EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative("CustomCenter"), new GUIContent("Custom Center"));
+					break;
 
-			case PolygonProperties.CenterTypes.Calculated:
-				break;
+				case PolygonProperties.CenterTypes.Offset:
+					EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative("CenterOffset"), new GUIContent("Offset"));
+					break;
 
-			case PolygonProperties.CenterTypes.Cutout:
-				EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative("CenterOffset"), new GUIContent("Offset"));
-				propertyPosition.y += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("CenterOffset"));
-				EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative("CutoutProperties"), new GUIContent("Cutout Properties"), true);
-				break;
+				case PolygonProperties.CenterTypes.Calculated:
+					break;
+
+				case PolygonProperties.CenterTypes.Cutout:
+					EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative("CenterOffset"), new GUIContent("Offset"));
+					propertyPosition.y += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("CenterOffset"));
+					EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative("CutoutProperties"), new GUIContent("Cutout Properties"), true);
+					break;
 			
+			}
+
+			EditorGUI.indentLevel = indent;
+			EditorGUI.EndProperty();
 		}
 
-		EditorGUI.indentLevel = indent;
-		EditorGUI.EndProperty();
-	}
-
-	public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-	{
-		if (!property.isExpanded)
+		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
-			return EditorGUIUtility.singleLineHeight;
-		}
+			if (!property.isExpanded)
+			{
+				return EditorGUIUtility.singleLineHeight;
+			}
 
-		PolygonProperties polygonProperties = 
-			(PolygonProperties)fieldInfo.GetValue(property.serializedObject.targetObject);
+			PolygonProperties polygonProperties = 
+				(PolygonProperties)fieldInfo.GetValue(property.serializedObject.targetObject);
 
-		SerializedProperty centerOffsetProp = property.FindPropertyRelative("CenterOffset");
-		SerializedProperty customCenterProp = property.FindPropertyRelative("CustomCenter");
+			SerializedProperty centerOffsetProp = property.FindPropertyRelative("CenterOffset");
+			SerializedProperty customCenterProp = property.FindPropertyRelative("CustomCenter");
 
-		switch (polygonProperties.CenterType) {
-			case PolygonProperties.CenterTypes.Calculated:
-				return EditorGUIUtility.singleLineHeight * 2.0f;
+			switch (polygonProperties.CenterType) {
+				case PolygonProperties.CenterTypes.Calculated:
+					return EditorGUIUtility.singleLineHeight * 2.0f;
 
-			case PolygonProperties.CenterTypes.CustomPosition:
-				return EditorGUIUtility.singleLineHeight * 2.25f + EditorGUI.GetPropertyHeight(customCenterProp);
+				case PolygonProperties.CenterTypes.CustomPosition:
+					return EditorGUIUtility.singleLineHeight * 2.25f + EditorGUI.GetPropertyHeight(customCenterProp);
 
-			case PolygonProperties.CenterTypes.Offset:
-				return EditorGUIUtility.singleLineHeight * 2.25f + EditorGUI.GetPropertyHeight(centerOffsetProp);
+				case PolygonProperties.CenterTypes.Offset:
+					return EditorGUIUtility.singleLineHeight * 2.25f + EditorGUI.GetPropertyHeight(centerOffsetProp);
 
-			case PolygonProperties.CenterTypes.Cutout:
-				SerializedProperty cutoutProp = property.FindPropertyRelative("CutoutProperties");
+				case PolygonProperties.CenterTypes.Cutout:
+					SerializedProperty cutoutProp = property.FindPropertyRelative("CutoutProperties");
 
-				if (cutoutProp.isExpanded)
-				{
-					return EditorGUIUtility.singleLineHeight * 2.5f + EditorGUI.GetPropertyHeight(cutoutProp) + EditorGUI.GetPropertyHeight(centerOffsetProp);
-				}
-				else
-				{
-					return EditorGUIUtility.singleLineHeight * 3.25f + EditorGUI.GetPropertyHeight(centerOffsetProp);
-				}
+					if (cutoutProp.isExpanded)
+					{
+						return EditorGUIUtility.singleLineHeight * 2.5f + EditorGUI.GetPropertyHeight(cutoutProp) + EditorGUI.GetPropertyHeight(centerOffsetProp);
+					}
+					else
+					{
+						return EditorGUIUtility.singleLineHeight * 3.25f + EditorGUI.GetPropertyHeight(centerOffsetProp);
+					}
 
-			default:
-				return EditorGUIUtility.singleLineHeight * 2.0f;
+				default:
+					return EditorGUIUtility.singleLineHeight * 2.0f;
+			}
 		}
 	}
 }

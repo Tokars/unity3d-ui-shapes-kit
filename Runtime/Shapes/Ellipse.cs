@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
-namespace ThisOtherThing.UI.Shapes
+namespace UIShapeKit.Shapes
 {
 	[AddComponentMenu("UI/Shapes/Ellipse", 1)]
 	public class Ellipse : MaskableGraphic, IShape

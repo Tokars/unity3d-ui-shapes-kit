@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ThisOtherThing.Utils
+namespace UIShapeKit
 {
 	public class MinNumAttribute : PropertyAttribute
 	{

@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
-namespace ThisOtherThing.UI.Shapes
+namespace UIShapeKit.Shapes
 {
 	[AddComponentMenu("UI/Shapes/Rectangle", 1)]
 	public class Rectangle : MaskableGraphic, IShape
@@ -14,8 +13,8 @@ namespace ThisOtherThing.UI.Shapes
 		public ShapeUtils.RoundedRects.RoundedProperties RoundedProperties = 
 			new ShapeUtils.RoundedRects.RoundedProperties();
 
-		public UI.GeoUtils.OutlineProperties OutlineProperties =
-			new UI.GeoUtils.OutlineProperties();
+		public GeoUtils.OutlineProperties OutlineProperties =
+			new GeoUtils.OutlineProperties();
 
 		public GeoUtils.ShadowsProperties ShadowProperties = new GeoUtils.ShadowsProperties();
 
@@ -25,7 +24,7 @@ namespace ThisOtherThing.UI.Shapes
 		public Sprite Sprite;
 
 		ShapeUtils.RoundedRects.RoundedCornerUnitPositionData unitPositionData;
-		UI.GeoUtils.EdgeGradientData edgeGradientData;
+		GeoUtils.EdgeGradientData edgeGradientData;
 
 		public void ForceMeshUpdate()
 		{
@@ -163,7 +162,7 @@ namespace ThisOtherThing.UI.Shapes
 					OutlineProperties,
 					RoundedProperties,
 					ShapeProperties.OutlineColor,
-					UI.GeoUtils.ZeroV2,
+					GeoUtils.ZeroV2,
 					ref unitPositionData,
 					edgeGradientData
 				);

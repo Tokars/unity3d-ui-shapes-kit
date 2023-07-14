@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace ThisOtherThing.UI.ShapeUtils
+namespace UIShapeKit.ShapeUtils
 {
 	public class Ellipses
 	{
@@ -111,11 +111,11 @@ namespace ThisOtherThing.UI.ShapeUtils
 			EllipseProperties ellipseProperties,
 			Color32 color,
 			Vector2 uv,
-			ref UI.GeoUtils.UnitPositionData unitPositionData,
-			ThisOtherThing.UI.GeoUtils.EdgeGradientData edgeGradientData
+			ref GeoUtils.UnitPositionData unitPositionData,
+			GeoUtils.EdgeGradientData edgeGradientData
 		) {
 
-			UI.GeoUtils.SetUnitPositionData(
+			GeoUtils.SetUnitPositionData(
 				ref unitPositionData,
 				ellipseProperties.AdjustedResolution,
 				ellipseProperties.BaseAngle
@@ -125,7 +125,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 			tmpUVPos.x = 0.5f;
 			tmpUVPos.y = 0.5f;
-			vh.AddVert(center, color, tmpUVPos, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(center, color, tmpUVPos, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			// add first circle vertex
 			tmpVertPos.x = center.x + unitPositionData.UnitPositions[0].x * (radius.x + edgeGradientData.ShadowOffset) * edgeGradientData.InnerScale;
@@ -134,7 +134,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 			tmpUVPos.x = (unitPositionData.UnitPositions[0].x * edgeGradientData.InnerScale + 1.0f) * 0.5f;
 			tmpUVPos.y = (unitPositionData.UnitPositions[0].y * edgeGradientData.InnerScale + 1.0f) * 0.5f;
-			vh.AddVert(tmpVertPos, color, tmpUVPos, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(tmpVertPos, color, tmpUVPos, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			for (int i = 1; i < ellipseProperties.AdjustedResolution; i++)
 			{
@@ -144,7 +144,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 				tmpUVPos.x = (unitPositionData.UnitPositions[i].x * edgeGradientData.InnerScale + 1.0f) * 0.5f;
 				tmpUVPos.y = (unitPositionData.UnitPositions[i].y * edgeGradientData.InnerScale + 1.0f) * 0.5f;
-				vh.AddVert(tmpVertPos, color, tmpUVPos, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpVertPos, color, tmpUVPos, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				vh.AddTriangle(numVertices, numVertices + i, numVertices + i + 1);
 			}
@@ -167,7 +167,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 				tmpUVPos.x = (unitPositionData.UnitPositions[0].x + 1.0f) * 0.5f;
 				tmpUVPos.y = (unitPositionData.UnitPositions[0].y + 1.0f) * 0.5f;
-				vh.AddVert(tmpVertPos, color, tmpUVPos, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpVertPos, color, tmpUVPos, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				for (int i = 1; i < ellipseProperties.AdjustedResolution; i++)
 				{
@@ -177,7 +177,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 					tmpUVPos.x = (unitPositionData.UnitPositions[i].x + 1.0f) * 0.5f;
 					tmpUVPos.y = (unitPositionData.UnitPositions[i].y + 1.0f) * 0.5f;
-					vh.AddVert(tmpVertPos, color, tmpUVPos, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					vh.AddVert(tmpVertPos, color, tmpUVPos, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 					vh.AddTriangle(numVertices + i + 1, outerFirstIndex + i, outerFirstIndex + i + 1);
 					vh.AddTriangle(numVertices + i + 1, outerFirstIndex + i + 1, numVertices + i + 2);
@@ -194,14 +194,14 @@ namespace ThisOtherThing.UI.ShapeUtils
 			ref VertexHelper vh,
 			Vector2 center,
 			Vector2 radius,
-			UI.GeoUtils.OutlineProperties outlineProperties,
+			GeoUtils.OutlineProperties outlineProperties,
 			EllipseProperties ellipseProperties,
 			Color32 color,
 			Vector2 uv,
-			ref UI.GeoUtils.UnitPositionData unitPositionData,
-			ThisOtherThing.UI.GeoUtils.EdgeGradientData edgeGradientData
+			ref GeoUtils.UnitPositionData unitPositionData,
+			GeoUtils.EdgeGradientData edgeGradientData
 		) {
-			UI.GeoUtils.SetUnitPositionData(
+			GeoUtils.SetUnitPositionData(
 				ref unitPositionData,
 				ellipseProperties.AdjustedResolution,
 				ellipseProperties.BaseAngle
@@ -230,13 +230,13 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpVertPos.y = center.y + unitPositionData.UnitPositions[i].y * tmpInnerRadius.y;
 				tmpVertPos.z = 0.0f;
 				uv.y = 0.0f;
-				vh.AddVert(tmpVertPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpVertPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				tmpVertPos.x = center.x + unitPositionData.UnitPositions[i].x * tmpOuterRadius.x;
 				tmpVertPos.y = center.y + unitPositionData.UnitPositions[i].y * tmpOuterRadius.y;
 				tmpVertPos.z = 0.0f;
 				uv.y = 1.0f;
-				vh.AddVert(tmpVertPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpVertPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				if (i > 0)
 				{
@@ -254,13 +254,13 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpVertPos.y = center.y + unitPositionData.UnitPositions[0].y * tmpInnerRadius.y;
 				tmpVertPos.z = 0.0f;
 				uv.y = 0.0f;
-				vh.AddVert(tmpVertPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpVertPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				tmpVertPos.x = center.x + unitPositionData.UnitPositions[0].x * tmpOuterRadius.x;
 				tmpVertPos.y = center.y + unitPositionData.UnitPositions[0].y * tmpOuterRadius.y;
 				tmpVertPos.z = 0.0f;
 				uv.y = 1.0f;
-				vh.AddVert(tmpVertPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpVertPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				baseIndex = startVertex + ellipseProperties.AdjustedResolution * 2;
 				vh.AddTriangle(baseIndex - 1, baseIndex, baseIndex + 1);
@@ -290,13 +290,13 @@ namespace ThisOtherThing.UI.ShapeUtils
 					tmpVertPos.y = center.y + unitPositionData.UnitPositions[i].y * tmpInnerRadius.y;
 					tmpVertPos.z = 0.0f;
 					uv.y = 0.0f;
-					vh.AddVert(tmpVertPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					vh.AddVert(tmpVertPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 					tmpVertPos.x = center.x + unitPositionData.UnitPositions[i].x * tmpOuterRadius.x;
 					tmpVertPos.y = center.y + unitPositionData.UnitPositions[i].y * tmpOuterRadius.y;
 					tmpVertPos.z = 0.0f;
 					uv.y = 1.0f;
-					vh.AddVert(tmpVertPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					vh.AddVert(tmpVertPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 					edgesBaseIndex = baseIndex + i * 2;
 					innerBaseIndex = startVertex + i * 2;
@@ -321,13 +321,13 @@ namespace ThisOtherThing.UI.ShapeUtils
 					tmpVertPos.y = center.y + unitPositionData.UnitPositions[0].y * tmpInnerRadius.y;
 					tmpVertPos.z = 0.0f;
 					uv.y = 0.0f;
-					vh.AddVert(tmpVertPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					vh.AddVert(tmpVertPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 					tmpVertPos.x = center.x + unitPositionData.UnitPositions[0].x * tmpOuterRadius.x;
 					tmpVertPos.y = center.y + unitPositionData.UnitPositions[0].y * tmpOuterRadius.y;
 					tmpVertPos.z = 0.0f;
 					uv.y = 1.0f;
-					vh.AddVert(tmpVertPos, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					vh.AddVert(tmpVertPos, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 					edgesBaseIndex = baseIndex + ellipseProperties.AdjustedResolution * 2;
 					innerBaseIndex = startVertex + ellipseProperties.AdjustedResolution * 2;

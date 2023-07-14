@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using UIShapeKit.ShapeUtils;
+using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
-namespace ThisOtherThing.UI.Shapes
+namespace UIShapeKit.Shapes
 {
 	[AddComponentMenu("UI/Shapes/Line", 30)]
 	public class Line : MaskableGraphic, IShape
@@ -27,7 +27,7 @@ namespace ThisOtherThing.UI.Shapes
 		public Sprite Sprite;
 
 		ShapeUtils.PointsList.PointsData[] pointsListData =
-			new ThisOtherThing.UI.ShapeUtils.PointsList.PointsData[] { new ShapeUtils.PointsList.PointsData()};
+			new PointsList.PointsData[] { new ShapeUtils.PointsList.PointsData()};
 		
 		GeoUtils.EdgeGradientData edgeGradientData;
 

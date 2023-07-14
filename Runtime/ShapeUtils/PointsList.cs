@@ -1,10 +1,9 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UIShapeKit.ShapeUtils.PointsGenerators;
+using UnityEngine;
+using RoundingProperties = UIShapeKit.GeoUtils.RoundingProperties;
 
-using ThisOtherThing.Utils;
-using RoundingProperties = ThisOtherThing.UI.GeoUtils.RoundingProperties;
-
-namespace ThisOtherThing.UI.ShapeUtils
+namespace UIShapeKit.ShapeUtils
 {
 	public class PointsList
 	{
@@ -45,7 +44,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 			};
 
 			[Range(0.0f, Mathf.PI)] public float MaxAngle = 0.2f;
-			[Utils.MinNum(0.0f)] public float RoundingDistance = 0.0f;
+			[MinNum(0.0f)] public float RoundingDistance = 0.0f;
 			public RoundingProperties CornerRounding = new RoundingProperties();
 
 			public bool ShowHandles = true;
@@ -87,10 +86,10 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 			public Vector2 Center = Vector2.zero;
 
-			[Utils.MinNum(1.0f)] public float Width = 10.0f;
-			[Utils.MinNum(1.0f)] public float Height = 10.0f;
+			[MinNum(1.0f)] public float Width = 10.0f;
+			[MinNum(1.0f)] public float Height = 10.0f;
 
-			[Utils.MinNum(1.0f)] public float Radius = 10.0f;
+			[MinNum(1.0f)] public float Radius = 10.0f;
 
 			[Range(-1.0f, 1.0f)] public float Direction = 1.0f;
 
@@ -103,7 +102,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 			public float Length = 1.0f;
 			public float EndRadius = 0.0f;
-			[Utils.MinNum(2)] public int Resolution = 10;
+			[MinNum(2)] public int Resolution = 10;
 			public bool CenterPoint = false;
 			public bool SkipLastPosition = false;
 
@@ -423,8 +422,8 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 				for ( int i = 0; i < numPositions; i++)
 				{
-					lineData.PositionNormals[i] = UI.GeoUtils.ZeroV2;
-					lineData.PositionTangents[i] = UI.GeoUtils.ZeroV2;
+					lineData.PositionNormals[i] = GeoUtils.ZeroV2;
+					lineData.PositionTangents[i] = GeoUtils.ZeroV2;
 				}
 
 				needsUpdate = true;
@@ -437,8 +436,8 @@ namespace ThisOtherThing.UI.ShapeUtils
 				lineData.TotalLength = 0.0f;
 
 				float distance;
-				Vector2 lastUnitTangent = UI.GeoUtils.ZeroV2;
-				Vector2 currentUnitTangent = UI.GeoUtils.ZeroV2;
+				Vector2 lastUnitTangent = GeoUtils.ZeroV2;
+				Vector2 currentUnitTangent = GeoUtils.ZeroV2;
 
 				// set data for first point
 				if (!lineData.IsClosed)

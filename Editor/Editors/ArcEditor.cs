@@ -1,76 +1,78 @@
-﻿using UnityEngine;
+﻿using UIShapeKit.ShapeUtils;
 using UnityEditor;
 using UnityEditor.UI;
+using Arc = UIShapeKit.Shapes.Arc;
 
-using Arc = ThisOtherThing.UI.Shapes.Arc;
-
-[CustomEditor(typeof(Arc))]
-[CanEditMultipleObjects]
-public class ArcEditor : GraphicEditor
+namespace UIShapeKit.Editor.Editors
 {
-	protected SerializedProperty materialProp;
-	protected SerializedProperty raycastTargetProp;
-
-	protected SerializedProperty shapePropertiesProp;
-	protected SerializedProperty ellipsePropertiesProp;
-	protected SerializedProperty arcPropertiesProp;
-	protected SerializedProperty lineCapProp;
-	protected SerializedProperty CapRoundingPropertiesProp;
-	protected SerializedProperty outlinePropertiesProp;
-	protected SerializedProperty shadowPropertiesProp;
-	protected SerializedProperty antiAliasingPropertiesProp;
-
-	bool capExpanded = false;
-
-	protected override void OnEnable()
+	[CustomEditor(typeof(Arc))]
+	[CanEditMultipleObjects]
+	public class ArcEditor : GraphicEditor
 	{
-		materialProp = serializedObject.FindProperty("m_Material");
-		raycastTargetProp = serializedObject.FindProperty("m_RaycastTarget");
+		protected SerializedProperty materialProp;
+		protected SerializedProperty raycastTargetProp;
 
-		shapePropertiesProp = serializedObject.FindProperty("ShapeProperties");
-		ellipsePropertiesProp = serializedObject.FindProperty("EllipseProperties");
-		arcPropertiesProp = serializedObject.FindProperty("ArcProperties");
-		outlinePropertiesProp = serializedObject.FindProperty("OutlineProperties");
-		shadowPropertiesProp = serializedObject.FindProperty("ShadowProperties");
-		antiAliasingPropertiesProp = serializedObject.FindProperty("AntiAliasingProperties");
+		protected SerializedProperty shapePropertiesProp;
+		protected SerializedProperty ellipsePropertiesProp;
+		protected SerializedProperty arcPropertiesProp;
+		protected SerializedProperty lineCapProp;
+		protected SerializedProperty CapRoundingPropertiesProp;
+		protected SerializedProperty outlinePropertiesProp;
+		protected SerializedProperty shadowPropertiesProp;
+		protected SerializedProperty antiAliasingPropertiesProp;
 
-		lineCapProp = serializedObject.FindProperty("LineProperties").FindPropertyRelative("LineCap");
-		CapRoundingPropertiesProp = serializedObject.FindProperty("LineProperties").FindPropertyRelative("RoundedCapResolution");
-	}
+		bool capExpanded = false;
 
-	protected override void OnDisable()
-	{
-		Tools.hidden = false;
-	}
-
-	public override void OnInspectorGUI()
-	{
-		serializedObject.Update();
-
-		EditorGUILayout.PropertyField(materialProp);
-		EditorGUILayout.PropertyField(raycastTargetProp);
-		EditorGUILayout.Space();
-
-		EditorGUILayout.PropertyField(shapePropertiesProp, true);
-		EditorGUILayout.PropertyField(ellipsePropertiesProp, true);
-		EditorGUILayout.PropertyField(arcPropertiesProp, true);
-
-		capExpanded = EditorGUILayout.Foldout(capExpanded, "Cap");
-		if (capExpanded)
+		protected override void OnEnable()
 		{
-			EditorGUILayout.PropertyField(lineCapProp);
+			materialProp = serializedObject.FindProperty("m_Material");
+			raycastTargetProp = serializedObject.FindProperty("m_RaycastTarget");
 
-			if (lineCapProp.enumValueIndex == (int)ThisOtherThing.UI.ShapeUtils.Lines.LineProperties.LineCapTypes.Round)
-			{
-				EditorGUILayout.PropertyField(CapRoundingPropertiesProp);
-			}
+			shapePropertiesProp = serializedObject.FindProperty("ShapeProperties");
+			ellipsePropertiesProp = serializedObject.FindProperty("EllipseProperties");
+			arcPropertiesProp = serializedObject.FindProperty("ArcProperties");
+			outlinePropertiesProp = serializedObject.FindProperty("OutlineProperties");
+			shadowPropertiesProp = serializedObject.FindProperty("ShadowProperties");
+			antiAliasingPropertiesProp = serializedObject.FindProperty("AntiAliasingProperties");
+
+			lineCapProp = serializedObject.FindProperty("LineProperties").FindPropertyRelative("LineCap");
+			CapRoundingPropertiesProp = serializedObject.FindProperty("LineProperties").FindPropertyRelative("RoundedCapResolution");
 		}
 
-		EditorGUILayout.PropertyField(outlinePropertiesProp, true);
+		protected override void OnDisable()
+		{
+			Tools.hidden = false;
+		}
 
-		EditorGUILayout.PropertyField(shadowPropertiesProp, true);
-		EditorGUILayout.PropertyField(antiAliasingPropertiesProp, true);
+		public override void OnInspectorGUI()
+		{
+			serializedObject.Update();
 
-		serializedObject.ApplyModifiedProperties();
+			EditorGUILayout.PropertyField(materialProp);
+			EditorGUILayout.PropertyField(raycastTargetProp);
+			EditorGUILayout.Space();
+
+			EditorGUILayout.PropertyField(shapePropertiesProp, true);
+			EditorGUILayout.PropertyField(ellipsePropertiesProp, true);
+			EditorGUILayout.PropertyField(arcPropertiesProp, true);
+
+			capExpanded = EditorGUILayout.Foldout(capExpanded, "Cap");
+			if (capExpanded)
+			{
+				EditorGUILayout.PropertyField(lineCapProp);
+
+				if (lineCapProp.enumValueIndex == (int)Lines.LineProperties.LineCapTypes.Round)
+				{
+					EditorGUILayout.PropertyField(CapRoundingPropertiesProp);
+				}
+			}
+
+			EditorGUILayout.PropertyField(outlinePropertiesProp, true);
+
+			EditorGUILayout.PropertyField(shadowPropertiesProp, true);
+			EditorGUILayout.PropertyField(antiAliasingPropertiesProp, true);
+
+			serializedObject.ApplyModifiedProperties();
+		}
 	}
 }

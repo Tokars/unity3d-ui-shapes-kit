@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Reflection;
+﻿using System.Reflection;
+using UnityEngine;
 
-namespace ThisOtherThing.Utils.Animation
+namespace UIShapeKit
 {
 	[ExecuteInEditMode]
 	public class ValueSetter : MonoBehaviour
@@ -31,7 +30,7 @@ namespace ThisOtherThing.Utils.Animation
 		Color cachedColorValue;
 		bool cachedBoolValue;
 
-		ThisOtherThing.UI.Shapes.IShape target;
+		IShape target;
 		System.Object targetField;
 		FieldInfo fieldInfo;
 
@@ -79,7 +78,7 @@ namespace ThisOtherThing.Utils.Animation
 
 			if (target == null)
 			{
-				target = gameObject.GetComponent<ThisOtherThing.UI.Shapes.IShape>();
+				target = gameObject.GetComponent<IShape>();
 			}
 
 			targetField = target.GetType()

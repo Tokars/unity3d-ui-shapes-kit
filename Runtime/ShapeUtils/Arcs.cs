@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace ThisOtherThing.UI.ShapeUtils
+namespace UIShapeKit.ShapeUtils
 {
 	public class Arcs
 	{
@@ -100,8 +100,8 @@ namespace ThisOtherThing.UI.ShapeUtils
 			ArcProperties arcProperties,
 			Color32 color,
 			Vector2 uv,
-			ref UI.GeoUtils.UnitPositionData unitPositionData,
-			ThisOtherThing.UI.GeoUtils.EdgeGradientData edgeGradientData
+			ref GeoUtils.UnitPositionData unitPositionData,
+			GeoUtils.EdgeGradientData edgeGradientData
 		) {
 			if (arcProperties.Length <= 0.0f)
 			{
@@ -119,7 +119,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 			int reversed1Forward0 = isReversed ? 1 : 0;
 			int reversed0Forward1 = isReversed ? 0 : 1;
 
-			UI.GeoUtils.SetUnitPositionData(
+			GeoUtils.SetUnitPositionData(
 				ref unitPositionData, 
 				circleProperties.AdjustedResolution, 
 				arcProperties.AdjustedBaseAngle,
@@ -145,19 +145,19 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 			vh.AddVert(
 				tmpOffsetCenter + arcProperties.CenterNormal * capsExtensionLength ,
-				color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			tmpPosition.x = tmpOffsetCenter.x + unitPositionData.UnitPositions[0].x * tmpOuterRadius.x + arcProperties.StartTangent.x * capsExtensionLength;
 			tmpPosition.y = tmpOffsetCenter.y + unitPositionData.UnitPositions[0].y * tmpOuterRadius.y + arcProperties.StartTangent.y * capsExtensionLength;
 			tmpPosition.z = tmpOffsetCenter.z;
-			vh.AddVert(tmpPosition, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(tmpPosition, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			for (int i = 1; i < arcProperties.AdjustedResolution; i++)
 			{
 				tmpPosition.x = tmpOffsetCenter.x + unitPositionData.UnitPositions[i].x * tmpOuterRadius.x;
 				tmpPosition.y = tmpOffsetCenter.y + unitPositionData.UnitPositions[i].y * tmpOuterRadius.y;
 				tmpPosition.z = tmpOffsetCenter.z;
-				vh.AddVert(tmpPosition, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPosition, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				vh.AddTriangle(numVertices, numVertices + i + reversedZeroForwardMinus, numVertices + i + reversedMinusForwardZero);
 			}
@@ -168,7 +168,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 			tmpPosition.x = tmpOffsetCenter.x + arcProperties.EndSegmentUnitPosition.x * tmpOuterRadius.x + arcProperties.EndTangent.x * capsExtensionLength;
 			tmpPosition.y = tmpOffsetCenter.y + arcProperties.EndSegmentUnitPosition.y * tmpOuterRadius.y + arcProperties.EndTangent.y * capsExtensionLength;
 			tmpPosition.z = tmpOffsetCenter.z + + arcProperties.EndTangent.z * capsExtensionLength;
-			vh.AddVert(tmpPosition, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+			vh.AddVert(tmpPosition, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			if (isReversed)
 			{
@@ -191,7 +191,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPosition.x = center.x + unitPositionData.UnitPositions[0].x * radius.x;
 				tmpPosition.y = center.y + unitPositionData.UnitPositions[0].y * radius.y;
 				tmpPosition.z = 0.0f;
-				vh.AddVert(tmpPosition, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				vh.AddVert(tmpPosition, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 				int innerBase, outerBase;
 				for (int i = 1; i <= arcProperties.AdjustedResolution; i++)
 				{
@@ -200,14 +200,14 @@ namespace ThisOtherThing.UI.ShapeUtils
 						tmpPosition.x = center.x + unitPositionData.UnitPositions[i].x * radius.x;
 						tmpPosition.y = center.y + unitPositionData.UnitPositions[i].y * radius.y;
 						tmpPosition.z = 0.0f;
-						vh.AddVert(tmpPosition, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+						vh.AddVert(tmpPosition, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 					}
 					else
 					{
 						tmpPosition.x = center.x + arcProperties.EndSegmentUnitPosition.x * radius.x;
 						tmpPosition.y = center.y + arcProperties.EndSegmentUnitPosition.y * radius.y;
 						tmpPosition.z = 0.0f;
-						vh.AddVert(tmpPosition, color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+						vh.AddVert(tmpPosition, color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 					}
 
 					innerBase = numVertices + i;
@@ -231,7 +231,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPosition.z = 0.0f;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				// add end outer vertex
 				tmpPosition.x = center.x + arcProperties.EndSegmentUnitPosition.x * radius.x + arcProperties.EndTangent.x * tmpOuterRadius.x;
@@ -239,7 +239,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPosition.z = 0.0f;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				radius.x -= edgeGradientData.SizeAdd;
 				radius.y -= edgeGradientData.SizeAdd;
@@ -250,7 +250,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPosition.z = 0.0f;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				// add end inner vertex
 				tmpPosition.x = center.x + arcProperties.EndSegmentUnitPosition.x * radius.x + arcProperties.EndTangent.x * tmpOuterRadius.x;
@@ -258,7 +258,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPosition.z = 0.0f;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				// add center extruded vertex
 				tmpPosition.x = center.x + arcProperties.CenterNormal.x * tmpOuterRadius.x;
@@ -266,7 +266,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPosition.z = 0.0f;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				int baseCornersIndex = vh.currentVertCount - 5;
 				int baseOuterIndex = numVertices + arcProperties.AdjustedResolution;
@@ -322,18 +322,18 @@ namespace ThisOtherThing.UI.ShapeUtils
 			Vector2 radius,
 			ShapeUtils.Ellipses.EllipseProperties ellipseProperties,
 			ArcProperties arcProperties,
-			UI.GeoUtils.OutlineProperties outlineProperties,
+			GeoUtils.OutlineProperties outlineProperties,
 			Color32 color,
 			Vector2 uv,
-			ref UI.GeoUtils.UnitPositionData unitPositionData,
-			ThisOtherThing.UI.GeoUtils.EdgeGradientData edgeGradientData
+			ref GeoUtils.UnitPositionData unitPositionData,
+			GeoUtils.EdgeGradientData edgeGradientData
 		) {
 			if (arcProperties.Length <= 0.0f)
 			{
 				return;
 			}
 
-			UI.GeoUtils.SetUnitPositionData(
+			GeoUtils.SetUnitPositionData(
 				ref unitPositionData, 
 				ellipseProperties.AdjustedResolution,
 				arcProperties.AdjustedBaseAngle,
@@ -378,14 +378,14 @@ namespace ThisOtherThing.UI.ShapeUtils
 			tmpPosition.z = 0.0f;
 			vh.AddVert(
 				tmpPosition, color, uv,
-				UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			tmpPosition.x = center.x + unitPositionData.UnitPositions[0].x * tmpOuterRadius.x + arcProperties.StartTangent.x * capsExtensionLength;
 			tmpPosition.y = center.y + unitPositionData.UnitPositions[0].y * tmpOuterRadius.y + arcProperties.StartTangent.y * capsExtensionLength;
 			tmpPosition.z = 0.0f;
 			vh.AddVert(
 				tmpPosition, color, uv,
-				UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			for (int i = 1; i < arcProperties.AdjustedResolution; i++)
 			{
@@ -394,14 +394,14 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPosition.z = 0.0f;
 				vh.AddVert(
 					tmpPosition, color, uv,
-						UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+						GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				tmpPosition.x = center.x + unitPositionData.UnitPositions[i].x * tmpOuterRadius.x;
 				tmpPosition.y = center.y + unitPositionData.UnitPositions[i].y * tmpOuterRadius.y;
 				tmpPosition.z = 0.0f;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 			
 				baseIndex = startVertex + i * 2;
 				vh.AddTriangle(baseIndex - 1, baseIndex, baseIndex + 1);
@@ -414,14 +414,14 @@ namespace ThisOtherThing.UI.ShapeUtils
 			tmpPosition.z = 0.0f;
 			vh.AddVert(
 				tmpPosition, color, uv,
-				UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			tmpPosition.x = center.x + arcProperties.EndSegmentUnitPosition.x * tmpOuterRadius.x + arcProperties.EndTangent.x * capsExtensionLength;
 			tmpPosition.y = center.y + arcProperties.EndSegmentUnitPosition.y * tmpOuterRadius.y + arcProperties.EndTangent.y * capsExtensionLength;
 			tmpPosition.z = 0.0f;
 			vh.AddVert(
 				tmpPosition, color, uv,
-				UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+				GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 			baseIndex = startVertex + arcProperties.AdjustedResolution * 2;
 			vh.AddTriangle(baseIndex - 1, baseIndex, baseIndex + 1);
@@ -486,14 +486,14 @@ namespace ThisOtherThing.UI.ShapeUtils
 					tmpPosition.z = noOverlapInnerOffset.z;
 					vh.AddVert(
 						tmpPosition, color, uv,
-						UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+						GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 					tmpPosition.x = center.x + unitPositionData.UnitPositions[i].x * tmpArcOuterRadius.x + noOverlapOuterOffset.x;
 					tmpPosition.y = center.y + unitPositionData.UnitPositions[i].y * tmpArcOuterRadius.y + noOverlapOuterOffset.y;
 					tmpPosition.z = noOverlapOuterOffset.z;
 					vh.AddVert(
 						tmpPosition, color, uv,
-						UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+						GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 					edgesBaseIndex = baseIndex + i * 2;
 					innerBaseIndex = startVertex + i * 2;
@@ -516,14 +516,14 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPosition.z = noOverlapInnerOffset.z;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				tmpPosition.x = center.x + arcProperties.EndSegmentUnitPosition.x * tmpArcOuterRadius.x + noOverlapOuterOffset.x;
 				tmpPosition.y = center.y + arcProperties.EndSegmentUnitPosition.y * tmpArcOuterRadius.y + noOverlapOuterOffset.y;
 				tmpPosition.z = noOverlapOuterOffset.z;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				edgesBaseIndex = baseIndex + arcProperties.AdjustedResolution * 2;
 				innerBaseIndex = startVertex + arcProperties.AdjustedResolution * 2;
@@ -550,7 +550,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPosition.z = arcProperties.StartTangent.z * capsExtensionLength;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 
 				tmpPosition.x = center.x + unitPositionData.UnitPositions[0].x * tmpOuterRadius.x + arcProperties.StartTangent.x * capsExtensionLength;
@@ -558,7 +558,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPosition.z = 0.0f;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				// add end outer antiAliasing
 				tmpPosition.x = center.x + arcProperties.EndSegmentUnitPosition.x * tmpInnerRadius.x + arcProperties.EndTangent.x * capsExtensionLength;
@@ -566,14 +566,14 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPosition.z = arcProperties.EndTangent.z * capsExtensionLength;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				tmpPosition.x = center.x + arcProperties.EndSegmentUnitPosition.x * tmpOuterRadius.x + arcProperties.EndTangent.x * capsExtensionLength;
 				tmpPosition.y = center.y + arcProperties.EndSegmentUnitPosition.y * tmpOuterRadius.y + arcProperties.EndTangent.y * capsExtensionLength;
 				tmpPosition.z = arcProperties.EndTangent.z * capsExtensionLength;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				if (arcProperties.Direction == ArcProperties.ArcDirection.Backward)
 				{
@@ -598,14 +598,14 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPosition.z = arcProperties.StartTangent.z * capsExtensionLength;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				tmpPosition.x = center.x + unitPositionData.UnitPositions[0].x * tmpOuterRadius.x + arcProperties.StartTangent.x * capsExtensionLength;
 				tmpPosition.y = center.y + unitPositionData.UnitPositions[0].y * tmpOuterRadius.y + arcProperties.StartTangent.y * capsExtensionLength;
 				tmpPosition.z = arcProperties.StartTangent.z * capsExtensionLength;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				// add end inner antiAliasing
 				tmpPosition.x = center.x + arcProperties.EndSegmentUnitPosition.x * tmpInnerRadius.x + arcProperties.EndTangent.x * capsExtensionLength;
@@ -613,14 +613,14 @@ namespace ThisOtherThing.UI.ShapeUtils
 				tmpPosition.z = arcProperties.EndTangent.z * capsExtensionLength;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				tmpPosition.x = center.x + arcProperties.EndSegmentUnitPosition.x * tmpOuterRadius.x + arcProperties.EndTangent.x * capsExtensionLength;
 				tmpPosition.y = center.y + arcProperties.EndSegmentUnitPosition.y * tmpOuterRadius.y + arcProperties.EndTangent.y * capsExtensionLength;
 				tmpPosition.z = arcProperties.EndTangent.z * capsExtensionLength;
 				vh.AddVert(
 					tmpPosition, color, uv,
-					UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				int currentVertCount = vh.currentVertCount;
 

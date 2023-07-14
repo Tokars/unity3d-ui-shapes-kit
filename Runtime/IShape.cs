@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace ThisOtherThing.UI.Shapes
+﻿
+namespace UIShapeKit
 {
 	public interface IShape
 	{

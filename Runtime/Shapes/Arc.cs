@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
-namespace ThisOtherThing.UI.Shapes
+namespace UIShapeKit.Shapes
 {
 	[AddComponentMenu("UI/Shapes/Arc", 50)]
 	public class Arc : MaskableGraphic, IShape

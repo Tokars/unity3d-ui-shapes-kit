@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using UIShapeKit.ShapeUtils;
+using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
-namespace ThisOtherThing.UI.Shapes
+namespace UIShapeKit.Shapes
 {
 
 	[AddComponentMenu("UI/Shapes/Polygon", 30)]
@@ -24,7 +24,7 @@ namespace ThisOtherThing.UI.Shapes
 			new GeoUtils.AntiAliasingProperties();
 
 		ShapeUtils.PointsList.PointsData[] pointsListData =
-			new ThisOtherThing.UI.ShapeUtils.PointsList.PointsData[] { new ShapeUtils.PointsList.PointsData()};
+			new PointsList.PointsData[] { new ShapeUtils.PointsList.PointsData()};
 		GeoUtils.EdgeGradientData edgeGradientData;
 
 		Rect pixelRect;

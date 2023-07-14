@@ -1,50 +1,51 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.UI;
+using PixelLine = UIShapeKit.Shapes.PixelLine;
 
-using PixelLine = ThisOtherThing.UI.Shapes.PixelLine;
-
-[CustomEditor(typeof(PixelLine))]
-[CanEditMultipleObjects]
-public class PixelLineEditor : GraphicEditor
+namespace UIShapeKit.Editor.Editors
 {
-	protected SerializedProperty colorProp;
-	protected SerializedProperty materialProp;
-	protected SerializedProperty raycastTargetProp;
-
-	protected SerializedProperty lineWeightProp;
-	protected SerializedProperty snappedPropertiesProp;
-
-	protected override void OnEnable()
+	[CustomEditor(typeof(PixelLine))]
+	[CanEditMultipleObjects]
+	public class PixelLineEditor : GraphicEditor
 	{
-		colorProp = serializedObject.FindProperty("m_Color");
-		materialProp = serializedObject.FindProperty("m_Material");
-		raycastTargetProp = serializedObject.FindProperty("m_RaycastTarget");
+		protected SerializedProperty colorProp;
+		protected SerializedProperty materialProp;
+		protected SerializedProperty raycastTargetProp;
 
-		lineWeightProp = serializedObject.FindProperty("LineWeight");
-		snappedPropertiesProp = serializedObject.FindProperty("SnappedProperties");
-	}
+		protected SerializedProperty lineWeightProp;
+		protected SerializedProperty snappedPropertiesProp;
 
-	protected override void OnDisable()
-	{
-		Tools.hidden = false;
-	}
+		protected override void OnEnable()
+		{
+			colorProp = serializedObject.FindProperty("m_Color");
+			materialProp = serializedObject.FindProperty("m_Material");
+			raycastTargetProp = serializedObject.FindProperty("m_RaycastTarget");
 
-	public override void OnInspectorGUI()
-	{
-		serializedObject.Update();
+			lineWeightProp = serializedObject.FindProperty("LineWeight");
+			snappedPropertiesProp = serializedObject.FindProperty("SnappedProperties");
+		}
 
-		EditorGUILayout.PropertyField(colorProp);
-		EditorGUILayout.PropertyField(materialProp);
-		EditorGUILayout.PropertyField(raycastTargetProp);
-		EditorGUILayout.Space();
+		protected override void OnDisable()
+		{
+			Tools.hidden = false;
+		}
 
-		EditorGUILayout.PropertyField(lineWeightProp);
+		public override void OnInspectorGUI()
+		{
+			serializedObject.Update();
 
-		EditorGUILayout.Space();
+			EditorGUILayout.PropertyField(colorProp);
+			EditorGUILayout.PropertyField(materialProp);
+			EditorGUILayout.PropertyField(raycastTargetProp);
+			EditorGUILayout.Space();
 
-		EditorGUILayout.PropertyField(snappedPropertiesProp, true);
+			EditorGUILayout.PropertyField(lineWeightProp);
 
-		serializedObject.ApplyModifiedProperties();
+			EditorGUILayout.Space();
+
+			EditorGUILayout.PropertyField(snappedPropertiesProp, true);
+
+			serializedObject.ApplyModifiedProperties();
+		}
 	}
 }

@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
-using PointListProperties = ThisOtherThing.UI.ShapeUtils.PointsList.PointListProperties;
-
-namespace ThisOtherThing.UI.ShapeUtils
+namespace UIShapeKit.ShapeUtils.PointsGenerators
 {
 	public class PointsGenerator
 	{

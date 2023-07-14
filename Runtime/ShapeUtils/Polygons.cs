@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-using ThisOtherThing.Utils;
-
-namespace ThisOtherThing.UI.ShapeUtils
+namespace UIShapeKit.ShapeUtils
 {
 	public class Polygons
 	{
@@ -85,8 +83,8 @@ namespace ThisOtherThing.UI.ShapeUtils
 		[System.Serializable]
 		public class CutoutProperties
 		{
-			[Utils.MinNum(3)] public int Resolution = 4;
-			[Utils.MinNum(0.0f)] public float Radius = 1.0f;
+			[MinNum(3)] public int Resolution = 4;
+			[MinNum(0.0f)] public float Radius = 1.0f;
 			[Range(-3.141592f, 3.141592f)] public float RotationOffset = 0.0f;
 
 			public GeoUtils.UnitPositionData UnitPositionData = new GeoUtils.UnitPositionData();
@@ -100,7 +98,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 			Color32 color,
 			Vector2 uv,
 			ref PointsList.PointsData pointsData,
-			ThisOtherThing.UI.GeoUtils.EdgeGradientData edgeGradientData
+			GeoUtils.EdgeGradientData edgeGradientData
 		) {
 			pointListProperties.SetPoints();
 			PointsList.SetLineData(pointListProperties, ref pointsData);
@@ -133,7 +131,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 					vh.AddVert(
 						tmpPos,
-						color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent
+						color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent
 					);
 				}
 			}
@@ -146,7 +144,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 				vh.AddVert(
 					tmpPos,
-					color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent
+					color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent
 				);
 			}
 
@@ -165,7 +163,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 			vh.AddVert(
 				tmpPos,
-				color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent
+				color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent
 			);
 
 			for (int i = 1; i < pointsData.NumPositions; i++)
@@ -183,7 +181,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 				vh.AddVert(
 					tmpPos,
-					color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent
+					color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent
 				);
 
 				if (!usesCutout)
@@ -252,12 +250,12 @@ namespace ThisOtherThing.UI.ShapeUtils
 				float offset = edgeGradientData.SizeAdd + edgeGradientData.ShadowOffset;
 
 				vh.AddVert(positionOffset + pointsData.Positions[0] + pointsData.PositionNormals[0] * offset,
-					color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+					color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 				for (int i = 1; i < pointsData.NumPositions; i++)
 				{
 					vh.AddVert(positionOffset + pointsData.Positions[i] + pointsData.PositionNormals[i] * offset,
-						color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent);
+						color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent);
 
 					vh.AddTriangle(firstOuterVertex + i + 1, outerFirstIndex + i, outerFirstIndex + i + 1);
 					vh.AddTriangle(firstOuterVertex + i + 1, outerFirstIndex + i + 1, firstOuterVertex + i + 2);
@@ -285,7 +283,7 @@ namespace ThisOtherThing.UI.ShapeUtils
 
 						vh.AddVert(
 							tmpPos,
-							color, uv, UI.GeoUtils.ZeroV2, UI.GeoUtils.UINormal, UI.GeoUtils.UITangent
+							color, uv, GeoUtils.ZeroV2, GeoUtils.UINormal, GeoUtils.UITangent
 						);
 					}
 

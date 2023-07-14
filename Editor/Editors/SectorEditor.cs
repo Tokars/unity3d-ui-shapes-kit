@@ -1,54 +1,55 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.UI;
+using Sector = UIShapeKit.Shapes.Sector;
 
-using Sector = ThisOtherThing.UI.Shapes.Sector;
-
-[CustomEditor(typeof(Sector))]
-[CanEditMultipleObjects]
-public class SectorEditor : GraphicEditor
+namespace UIShapeKit.Editor.Editors
 {
-	protected SerializedProperty materialProp;
-	protected SerializedProperty raycastTargetProp;
-
-	protected SerializedProperty shapePropertiesProp;
-	protected SerializedProperty ellipsePropertiesProp;
-	protected SerializedProperty arcPropertiesProp;
-	protected SerializedProperty shadowPropertiesProp;
-	protected SerializedProperty antiAliasingPropertiesProp;
-
-	protected override void OnEnable()
+	[CustomEditor(typeof(Sector))]
+	[CanEditMultipleObjects]
+	public class SectorEditor : GraphicEditor
 	{
-		materialProp = serializedObject.FindProperty("m_Material");
-		raycastTargetProp = serializedObject.FindProperty("m_RaycastTarget");
+		protected SerializedProperty materialProp;
+		protected SerializedProperty raycastTargetProp;
 
-		shapePropertiesProp = serializedObject.FindProperty("ShapeProperties");
-		ellipsePropertiesProp = serializedObject.FindProperty("EllipseProperties");
-		arcPropertiesProp = serializedObject.FindProperty("ArcProperties");
-		shadowPropertiesProp = serializedObject.FindProperty("ShadowProperties");
-		antiAliasingPropertiesProp = serializedObject.FindProperty("AntiAliasingProperties");
-	}
+		protected SerializedProperty shapePropertiesProp;
+		protected SerializedProperty ellipsePropertiesProp;
+		protected SerializedProperty arcPropertiesProp;
+		protected SerializedProperty shadowPropertiesProp;
+		protected SerializedProperty antiAliasingPropertiesProp;
 
-	protected override void OnDisable()
-	{
-		Tools.hidden = false;
-	}
+		protected override void OnEnable()
+		{
+			materialProp = serializedObject.FindProperty("m_Material");
+			raycastTargetProp = serializedObject.FindProperty("m_RaycastTarget");
 
-	public override void OnInspectorGUI()
-	{
-		serializedObject.Update();
+			shapePropertiesProp = serializedObject.FindProperty("ShapeProperties");
+			ellipsePropertiesProp = serializedObject.FindProperty("EllipseProperties");
+			arcPropertiesProp = serializedObject.FindProperty("ArcProperties");
+			shadowPropertiesProp = serializedObject.FindProperty("ShadowProperties");
+			antiAliasingPropertiesProp = serializedObject.FindProperty("AntiAliasingProperties");
+		}
 
-		EditorGUILayout.PropertyField(materialProp);
-		EditorGUILayout.PropertyField(raycastTargetProp);
-		EditorGUILayout.Space();
+		protected override void OnDisable()
+		{
+			Tools.hidden = false;
+		}
 
-		EditorGUILayout.PropertyField(shapePropertiesProp, true);
-		EditorGUILayout.PropertyField(ellipsePropertiesProp, true);
-		EditorGUILayout.PropertyField(arcPropertiesProp, true);
+		public override void OnInspectorGUI()
+		{
+			serializedObject.Update();
 
-		EditorGUILayout.PropertyField(shadowPropertiesProp, true);
-		EditorGUILayout.PropertyField(antiAliasingPropertiesProp, true);
+			EditorGUILayout.PropertyField(materialProp);
+			EditorGUILayout.PropertyField(raycastTargetProp);
+			EditorGUILayout.Space();
 
-		serializedObject.ApplyModifiedProperties();
+			EditorGUILayout.PropertyField(shapePropertiesProp, true);
+			EditorGUILayout.PropertyField(ellipsePropertiesProp, true);
+			EditorGUILayout.PropertyField(arcPropertiesProp, true);
+
+			EditorGUILayout.PropertyField(shadowPropertiesProp, true);
+			EditorGUILayout.PropertyField(antiAliasingPropertiesProp, true);
+
+			serializedObject.ApplyModifiedProperties();
+		}
 	}
 }

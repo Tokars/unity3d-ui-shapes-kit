@@ -1,9 +1,7 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
-using ThisOtherThing.Utils;
-
-namespace ThisOtherThing
+namespace UIShapeKit.Editor
 {
 	[CustomPropertyDrawer(typeof(MinNumAttribute))] 
 	public class MinDrawer : PropertyDrawer
