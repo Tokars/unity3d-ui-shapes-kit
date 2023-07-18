@@ -2,7 +2,8 @@
     "name": "UIShapeKit.Editor",
     "rootNamespace": "UIShapeKit",
     "references": [
-        "UIShapeKit.Runtime"
+        "UIShapeKit.Runtime",
+        "ui.Bezier.Runtime"
     ],
     "includePlatforms": [
         "Editor"

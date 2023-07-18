@@ -1,7 +1,11 @@
 {
     "name": "UIShapeKit.Runtime",
     "rootNamespace": "UIShapeKit",
-    "references": [],
+    "references": [
+        "GUID:05be9e430d718e4459a36df6ec9eb764",
+        "GUID:19a59ec2faeb0395e81274997fe2068c",
+        "GUID:c284b9a9d3dea5681b4bb5cdf4790bd5"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
