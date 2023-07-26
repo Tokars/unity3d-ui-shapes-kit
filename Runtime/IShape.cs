@@ -1,8 +1,7 @@
-﻿
-namespace UIShapeKit
+﻿namespace UIShapeKit
 {
-	public interface IShape
-	{
-		void ForceMeshUpdate();
-	}
+    public interface IShape
+    {
+        void ForceMeshUpdate();
+    }
 }

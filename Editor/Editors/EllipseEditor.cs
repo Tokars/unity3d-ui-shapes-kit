@@ -4,63 +4,63 @@ using Ellipse = UIShapeKit.Shapes.Ellipse;
 
 namespace UIShapeKit.Editor.Editors
 {
-	[CustomEditor(typeof(Ellipse))]
-	[CanEditMultipleObjects]
-	public class EllipseEditor : GraphicEditor
-	{
-		Ellipse ellipse;
+    [CustomEditor(typeof(Ellipse))]
+    [CanEditMultipleObjects]
+    public class EllipseEditor : GraphicEditor
+    {
+        Ellipse ellipse;
 
-		protected SerializedProperty materialProp;
-		protected SerializedProperty spriteProp;
-		protected SerializedProperty raycastTargetProp;
+        protected SerializedProperty MaterialProp;
+        protected SerializedProperty SpriteProp;
+        protected SerializedProperty RaycastTargetProp;
 
-		protected SerializedProperty shapePropertiesProp;
-		protected SerializedProperty ellipsePropertiesProp;
-		protected SerializedProperty outlinePropertiesProp;
-		protected SerializedProperty shadowPropertiesProp;
-		protected SerializedProperty antiAliasingPropertiesProp;
+        protected SerializedProperty ShapePropertiesProp;
+        protected SerializedProperty EllipsePropertiesProp;
+        protected SerializedProperty OutlinePropertiesProp;
+        protected SerializedProperty ShadowPropertiesProp;
+        protected SerializedProperty AntiAliasingPropertiesProp;
 
-		protected override void OnEnable()
-		{
-			ellipse = (Ellipse)target;
+        protected override void OnEnable()
+        {
+            ellipse = (Ellipse)target;
 
-			materialProp = serializedObject.FindProperty("m_Material");
-			spriteProp = serializedObject.FindProperty("Sprite");
-			raycastTargetProp = serializedObject.FindProperty("m_RaycastTarget");
+            MaterialProp = serializedObject.FindProperty("m_Material");
+            SpriteProp = serializedObject.FindProperty("Sprite");
+            RaycastTargetProp = serializedObject.FindProperty("m_RaycastTarget");
 
-			shapePropertiesProp = serializedObject.FindProperty("ShapeProperties");
-			ellipsePropertiesProp = serializedObject.FindProperty("EllipseProperties");
-			outlinePropertiesProp = serializedObject.FindProperty("OutlineProperties");
-			shadowPropertiesProp = serializedObject.FindProperty("ShadowProperties");
-			antiAliasingPropertiesProp = serializedObject.FindProperty("AntiAliasingProperties");
-		}
+            ShapePropertiesProp = serializedObject.FindProperty(nameof(ellipse.shapeProperties));
+            EllipsePropertiesProp = serializedObject.FindProperty(nameof(ellipse.ellipseProperties));
+            OutlinePropertiesProp = serializedObject.FindProperty(nameof(ellipse.outlineProperties));
+            ShadowPropertiesProp = serializedObject.FindProperty(nameof(ellipse.shadowProperties));
+            AntiAliasingPropertiesProp = serializedObject.FindProperty(nameof(ellipse.antiAliasingProperties));
+        }
 
-		protected override void OnDisable()
-		{
-			Tools.hidden = false;
-		}
+        protected override void OnDisable()
+        {
+            Tools.hidden = false;
+        }
 
-		public override void OnInspectorGUI()
-		{
-			serializedObject.Update();
+        public override void OnInspectorGUI()
+        {
+            serializedObject.Update();
 
-			EditorGUILayout.PropertyField(materialProp);
-			EditorGUILayout.PropertyField(spriteProp);
-			EditorGUILayout.PropertyField(raycastTargetProp);
-			EditorGUILayout.Space();
+            EditorGUILayout.PropertyField(MaterialProp);
+            EditorGUILayout.PropertyField(SpriteProp);
+            EditorGUILayout.PropertyField(RaycastTargetProp);
+            EditorGUILayout.Space();
 
-			EditorGUILayout.PropertyField(shapePropertiesProp, true);
-			EditorGUILayout.PropertyField(ellipsePropertiesProp, true);
+            EditorGUILayout.PropertyField(ShapePropertiesProp, true);
+            EditorGUILayout.PropertyField(EllipsePropertiesProp, true);
 
-			if (ellipse.ShapeProperties.DrawOutline)
-			{
-				EditorGUILayout.PropertyField(outlinePropertiesProp, true);
-			}
+            if (ellipse.shapeProperties.DrawOutline)
+            {
+                EditorGUILayout.PropertyField(OutlinePropertiesProp, true);
+            }
 
-			EditorGUILayout.PropertyField(shadowPropertiesProp, true);
-			EditorGUILayout.PropertyField(antiAliasingPropertiesProp, true);
+            EditorGUILayout.PropertyField(ShadowPropertiesProp, true);
+            EditorGUILayout.PropertyField(AntiAliasingPropertiesProp, true);
 
-			serializedObject.ApplyModifiedProperties();
-		}
-	}
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
 }

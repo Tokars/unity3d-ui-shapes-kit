@@ -3,207 +3,200 @@ using UnityEngine.UI;
 
 namespace UIShapeKit.Shapes
 {
-	[AddComponentMenu("UI/Shapes/Rectangle", 1)]
-	public class Rectangle : MaskableGraphic, IShape
-	{
+    [AddComponentMenu("UI/Shapes/Rectangle", 1), RequireComponent(typeof(CanvasRenderer))]
+    public class Rectangle : MaskableGraphic, IShape
+    {
+        [SerializeField] public GeoUtils.OutlineShapeProperties shapeProperties = new();
+        [SerializeField] public ShapeUtils.RoundedRects.RoundedProperties roundedProperties = new();
+        [SerializeField] public GeoUtils.OutlineProperties outlineProperties = new();
+        [SerializeField] public GeoUtils.ShadowsProperties shadowProperties = new();
+        [SerializeField] public GeoUtils.AntiAliasingProperties antiAliasingProperties = new();
 
-		public GeoUtils.OutlineShapeProperties ShapeProperties =
-			new GeoUtils.OutlineShapeProperties();
+        public Sprite Sprite;
 
-		public ShapeUtils.RoundedRects.RoundedProperties RoundedProperties = 
-			new ShapeUtils.RoundedRects.RoundedProperties();
+        private ShapeUtils.RoundedRects.RoundedCornerUnitPositionData _unitPositionData;
+        private GeoUtils.EdgeGradientData _edgeGradientData;
 
-		public GeoUtils.OutlineProperties OutlineProperties =
-			new GeoUtils.OutlineProperties();
+        public void ForceMeshUpdate()
+        {
+            SetVerticesDirty();
+            SetMaterialDirty();
+        }
 
-		public GeoUtils.ShadowsProperties ShadowProperties = new GeoUtils.ShadowsProperties();
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            roundedProperties.OnCheck(rectTransform.rect);
+            outlineProperties.OnCheck();
+            antiAliasingProperties.OnCheck();
 
-		public GeoUtils.AntiAliasingProperties AntiAliasingProperties = 
-			new GeoUtils.AntiAliasingProperties();
+            ForceMeshUpdate();
+        }
+#endif
 
-		public Sprite Sprite;
+        protected override void OnPopulateMesh(VertexHelper vh)
+        {
+            vh.Clear();
 
-		ShapeUtils.RoundedRects.RoundedCornerUnitPositionData unitPositionData;
-		GeoUtils.EdgeGradientData edgeGradientData;
+            Rect pixelRect = RectTransformUtility.PixelAdjustRect(rectTransform, canvas);
 
-		public void ForceMeshUpdate()
-		{
-			SetVerticesDirty();
-			SetMaterialDirty();
-		}
+            roundedProperties.UpdateAdjusted(pixelRect, 0.0f);
+            antiAliasingProperties.UpdateAdjusted(canvas);
+            outlineProperties.UpdateAdjusted();
+            shadowProperties.UpdateAdjusted();
 
-		#if UNITY_EDITOR
-		protected override void OnValidate()
-		{
-			RoundedProperties.OnCheck(rectTransform.rect);
-			OutlineProperties.OnCheck();
-			AntiAliasingProperties.OnCheck();
+            // draw fill shadows
+            if (shadowProperties.ShadowsEnabled)
+            {
+                if (shapeProperties.DrawFill && shapeProperties.DrawFillShadow)
+                {
+                    for (int i = 0; i < shadowProperties.Shadows.Length; i++)
+                    {
+                        _edgeGradientData.SetActiveData(
+                            1.0f - shadowProperties.Shadows[i].Softness,
+                            shadowProperties.Shadows[i].Size,
+                            antiAliasingProperties.Adjusted
+                        );
 
-			ForceMeshUpdate();
-		}
-		#endif
+                        ShapeUtils.RoundedRects.AddRoundedRect(
+                            ref vh,
+                            shadowProperties.GetCenterOffset(pixelRect.center, i),
+                            pixelRect.width,
+                            pixelRect.height,
+                            roundedProperties,
+                            shadowProperties.Shadows[i].Color,
+                            GeoUtils.ZeroV2,
+                            ref _unitPositionData,
+                            _edgeGradientData
+                        );
+                    }
+                }
+            }
 
-		protected override void OnPopulateMesh(VertexHelper vh)	{
-			vh.Clear();
+            if (shadowProperties.ShowShape && shapeProperties.DrawFill)
+            {
+                if (antiAliasingProperties.Adjusted > 0.0f)
+                {
+                    _edgeGradientData.SetActiveData(
+                        1.0f,
+                        0.0f,
+                        antiAliasingProperties.Adjusted
+                    );
+                }
+                else
+                {
+                    _edgeGradientData.Reset();
+                }
 
-			Rect pixelRect = RectTransformUtility.PixelAdjustRect(rectTransform, canvas);
+                ShapeUtils.RoundedRects.AddRoundedRect(
+                    ref vh,
+                    pixelRect.center,
+                    pixelRect.width,
+                    pixelRect.height,
+                    roundedProperties,
+                    shapeProperties.FillColor,
+                    GeoUtils.ZeroV2,
+                    ref _unitPositionData,
+                    _edgeGradientData
+                );
+            }
 
-			RoundedProperties.UpdateAdjusted(pixelRect, 0.0f);
-			AntiAliasingProperties.UpdateAdjusted(canvas);
-			OutlineProperties.UpdateAdjusted();
-			ShadowProperties.UpdateAdjusted();
+            if (shadowProperties.ShadowsEnabled)
+            {
+                // draw outline shadows
+                if (shapeProperties.DrawOutline && shapeProperties.DrawOutlineShadow)
+                {
+                    for (int i = 0; i < shadowProperties.Shadows.Length; i++)
+                    {
+                        _edgeGradientData.SetActiveData(
+                            1.0f - shadowProperties.Shadows[i].Softness,
+                            shadowProperties.Shadows[i].Size,
+                            antiAliasingProperties.Adjusted
+                        );
 
-			// draw fill shadows
-			if (ShadowProperties.ShadowsEnabled)
-			{
-				if (ShapeProperties.DrawFill && ShapeProperties.DrawFillShadow)
-				{
-					for (int i = 0; i < ShadowProperties.Shadows.Length; i++)
-					{
-						edgeGradientData.SetActiveData(
-							1.0f - ShadowProperties.Shadows[i].Softness,
-							ShadowProperties.Shadows[i].Size,
-							AntiAliasingProperties.Adjusted
-						);
+                        ShapeUtils.RoundedRects.AddRoundedRectLine(
+                            ref vh,
+                            shadowProperties.GetCenterOffset(pixelRect.center, i),
+                            pixelRect.width,
+                            pixelRect.height,
+                            outlineProperties,
+                            roundedProperties,
+                            shadowProperties.Shadows[i].Color,
+                            GeoUtils.ZeroV2,
+                            ref _unitPositionData,
+                            _edgeGradientData
+                        );
+                    }
+                }
+            }
 
-						ShapeUtils.RoundedRects.AddRoundedRect(
-							ref vh,
-							ShadowProperties.GetCenterOffset(pixelRect.center, i),
-							pixelRect.width,
-							pixelRect.height,
-							RoundedProperties,
-							ShadowProperties.Shadows[i].Color,
-							GeoUtils.ZeroV2,
-							ref unitPositionData,
-							edgeGradientData
-						);
-					}
-				}
-			}
+            // fill
+            if (shadowProperties.ShowShape && shapeProperties.DrawOutline)
+            {
+                if (antiAliasingProperties.Adjusted > 0.0f)
+                {
+                    _edgeGradientData.SetActiveData(
+                        1.0f,
+                        0.0f,
+                        antiAliasingProperties.Adjusted
+                    );
+                }
+                else
+                {
+                    _edgeGradientData.Reset();
+                }
 
-			if (ShadowProperties.ShowShape && ShapeProperties.DrawFill)
-			{
-				if (AntiAliasingProperties.Adjusted > 0.0f)
-				{
-					edgeGradientData.SetActiveData(
-						1.0f,
-						0.0f,
-						AntiAliasingProperties.Adjusted
-					);
-				}
-				else
-				{
-					edgeGradientData.Reset();
-				}
+                ShapeUtils.RoundedRects.AddRoundedRectLine(
+                    ref vh,
+                    pixelRect.center,
+                    pixelRect.width,
+                    pixelRect.height,
+                    outlineProperties,
+                    roundedProperties,
+                    shapeProperties.OutlineColor,
+                    GeoUtils.ZeroV2,
+                    ref _unitPositionData,
+                    _edgeGradientData
+                );
+            }
+        }
 
-				ShapeUtils.RoundedRects.AddRoundedRect(
-					ref vh,
-					pixelRect.center,
-					pixelRect.width,
-					pixelRect.height,
-					RoundedProperties,
-					ShapeProperties.FillColor,
-					GeoUtils.ZeroV2,
-					ref unitPositionData,
-					edgeGradientData
-				);
-			}
+        protected override void UpdateMaterial()
+        {
+            base.UpdateMaterial();
 
-			if (ShadowProperties.ShadowsEnabled)
-			{
-				// draw outline shadows
-				if (ShapeProperties.DrawOutline && ShapeProperties.DrawOutlineShadow)
-				{
-					for (int i = 0; i < ShadowProperties.Shadows.Length; i++)
-					{
-						edgeGradientData.SetActiveData(
-							1.0f - ShadowProperties.Shadows[i].Softness,
-							ShadowProperties.Shadows[i].Size,
-							AntiAliasingProperties.Adjusted
-						);
+            // check if this sprite has an associated alpha texture (generated when splitting RGBA = RGB + A as two textures without alpha)
 
-						ShapeUtils.RoundedRects.AddRoundedRectLine(
-							ref vh,
-							ShadowProperties.GetCenterOffset(pixelRect.center, i),
-							pixelRect.width,
-							pixelRect.height,
-							OutlineProperties,
-							RoundedProperties,
-							ShadowProperties.Shadows[i].Color,
-							GeoUtils.ZeroV2,
-							ref unitPositionData,
-							edgeGradientData
-						);
-					}
-				}
-			}
+            if (Sprite == null)
+            {
+                canvasRenderer.SetAlphaTexture(null);
+                return;
+            }
 
-			// fill
-			if (ShadowProperties.ShowShape && ShapeProperties.DrawOutline)
-			{
-				if (AntiAliasingProperties.Adjusted > 0.0f)
-				{
-					edgeGradientData.SetActiveData(
-						1.0f,
-						0.0f,
-						AntiAliasingProperties.Adjusted
-					);
-				}
-				else
-				{
-					edgeGradientData.Reset();
-				}
+            Texture2D alphaTex = Sprite.associatedAlphaSplitTexture;
 
-				ShapeUtils.RoundedRects.AddRoundedRectLine(
-					ref vh,
-					pixelRect.center,
-					pixelRect.width,
-					pixelRect.height,
-					OutlineProperties,
-					RoundedProperties,
-					ShapeProperties.OutlineColor,
-					GeoUtils.ZeroV2,
-					ref unitPositionData,
-					edgeGradientData
-				);
-			}
-		}
+            if (alphaTex != null)
+            {
+                canvasRenderer.SetAlphaTexture(alphaTex);
+            }
+        }
 
-		protected override void UpdateMaterial()
-		{
-			base.UpdateMaterial();
+        public override Texture mainTexture
+        {
+            get
+            {
+                if (Sprite == null)
+                {
+                    if (material != null && material.mainTexture != null)
+                    {
+                        return material.mainTexture;
+                    }
 
-			// check if this sprite has an associated alpha texture (generated when splitting RGBA = RGB + A as two textures without alpha)
+                    return s_WhiteTexture;
+                }
 
-			if (Sprite == null)
-			{
-				canvasRenderer.SetAlphaTexture(null);
-				return;
-			}
-
-			Texture2D alphaTex = Sprite.associatedAlphaSplitTexture;
-
-			if (alphaTex != null)
-			{
-				canvasRenderer.SetAlphaTexture(alphaTex);
-			}
-		}
-
-		public override Texture mainTexture
-		{
-			get
-			{
-				if (Sprite == null)
-				{
-					if (material != null && material.mainTexture != null)
-					{
-						return material.mainTexture;
-					}
-					return s_WhiteTexture;
-				}
-
-				return Sprite.texture;
-			}
-		}
-	}
+                return Sprite.texture;
+            }
+        }
+    }
 }
