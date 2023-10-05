@@ -7,10 +7,9 @@ namespace UIShapeKit.Shapes
 	public class PixelLine : MaskableGraphic, IShape
 	{
 
-		public float LineWeight = 1.0f;
+		public float lineWeight = 1.0f;
 
-		public GeoUtils.SnappedPositionAndOrientationProperties SnappedProperties = 
-			new GeoUtils.SnappedPositionAndOrientationProperties();
+		public GeoUtils.SnappedPositionAndOrientationProperties snappedProperties = new ();
 
 		Vector3 center = Vector3.zero;
 
@@ -40,9 +39,9 @@ namespace UIShapeKit.Shapes
 				pixelSizeScaler = 1.0f / canvas.scaleFactor;
 			}
 
-			float adjustedLineWeight = LineWeight * pixelSizeScaler;
+			float adjustedLineWeight = lineWeight * pixelSizeScaler;
 
-			switch (SnappedProperties.Position)
+			switch (snappedProperties.Position)
 			{
 				case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Center:
 					center.x = pixelRect.center.x;
@@ -71,7 +70,7 @@ namespace UIShapeKit.Shapes
 			float width = 0.0f;
 			float height = 0.0f;
 
-			switch (SnappedProperties.Orientation)
+			switch (snappedProperties.Orientation)
 			{
 				case GeoUtils.SnappedPositionAndOrientationProperties.OrientationTypes.Horizontal:
 					width = pixelRect.width;
