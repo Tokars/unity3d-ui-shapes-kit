@@ -4,193 +4,181 @@ using UnityEngine.UI;
 
 namespace UIShapeKit.Shapes
 {
-	[AddComponentMenu("UI/Shapes/Line", 30), RequireComponent(typeof(CanvasRenderer))]
-	public class Line : MaskableGraphic, IShape
-	{
-		public GeoUtils.ShapeProperties ShapeProperties =
-			new GeoUtils.ShapeProperties();
+    [AddComponentMenu("UI/Shapes/Line", 30), RequireComponent(typeof(CanvasRenderer))]
+    public class Line : MaskableGraphic, IShape
+    {
+        [SerializeField] public GeoUtils.ShapeProperties shapeProperties = new();
+        [SerializeField] public PointsList.PointListsProperties pointListsProperties = new();
+        [SerializeField] public Lines.LineProperties lineProperties = new();
+        [SerializeField] public GeoUtils.OutlineProperties outlineProperties = new();
+        [SerializeField] public GeoUtils.ShadowsProperties shadowProperties = new();
+        [SerializeField] public GeoUtils.AntiAliasingProperties antiAliasingProperties = new();
 
-		public ShapeUtils.PointsList.PointListsProperties PointListsProperties =
-			new ShapeUtils.PointsList.PointListsProperties();
+        public Sprite Sprite;
 
-		public ShapeUtils.Lines.LineProperties LineProperties = 
-			new ShapeUtils.Lines.LineProperties();
+        private PointsList.PointsData[] _pointsListData =  {new ()};
+        private GeoUtils.EdgeGradientData _edgeGradientData;
 
-		public GeoUtils.OutlineProperties OutlineProperties = 
-			new GeoUtils.OutlineProperties();
+        public void ForceMeshUpdate()
+        {
+            if (_pointsListData == null || _pointsListData.Length != pointListsProperties.PointListProperties.Length)
+            {
+                System.Array.Resize(ref _pointsListData, pointListsProperties.PointListProperties.Length);
+            }
 
-		public GeoUtils.ShadowsProperties ShadowProperties = new GeoUtils.ShadowsProperties();
+            for (int i = 0; i < _pointsListData.Length; i++)
+            {
+                _pointsListData[i].NeedsUpdate = true;
+                pointListsProperties.PointListProperties[i].GeneratorData.NeedsUpdate = true;
+            }
 
-		public GeoUtils.AntiAliasingProperties AntiAliasingProperties = 
-			new GeoUtils.AntiAliasingProperties();
+            SetVerticesDirty();
+            SetMaterialDirty();
+        }
 
-		public Sprite Sprite;
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            lineProperties.OnCheck();
+            outlineProperties.OnCheck();
+            antiAliasingProperties.OnCheck();
 
-		ShapeUtils.PointsList.PointsData[] pointsListData =
-			new PointsList.PointsData[] { new ShapeUtils.PointsList.PointsData()};
-		
-		GeoUtils.EdgeGradientData edgeGradientData;
+            ForceMeshUpdate();
+        }
+#endif
 
-		public void ForceMeshUpdate()
-		{
-			if (pointsListData == null || pointsListData.Length != PointListsProperties.PointListProperties.Length)
-			{
-				System.Array.Resize(ref pointsListData, PointListsProperties.PointListProperties.Length);
-			}
+        protected override void OnPopulateMesh(VertexHelper vh)
+        {
+            vh.Clear();
 
-			for (int i = 0; i < pointsListData.Length; i++)
-			{
-				pointsListData[i].NeedsUpdate = true;
-				PointListsProperties.PointListProperties[i].GeneratorData.NeedsUpdate = true;
-			}
+            outlineProperties.UpdateAdjusted();
+            shadowProperties.UpdateAdjusted();
 
-			SetVerticesDirty();
-			SetMaterialDirty();
-		}
+            if (_pointsListData == null || _pointsListData.Length != pointListsProperties.PointListProperties.Length)
+            {
+                System.Array.Resize(ref _pointsListData, pointListsProperties.PointListProperties.Length);
 
-		#if UNITY_EDITOR
-		protected override void OnValidate()
-		{
-			LineProperties.OnCheck();
-			OutlineProperties.OnCheck();
-			AntiAliasingProperties.OnCheck();
+                for (int i = 0; i < _pointsListData.Length; i++)
+                {
+                    _pointsListData[i].NeedsUpdate = true;
+                    pointListsProperties.PointListProperties[i].GeneratorData.NeedsUpdate = true;
+                }
+            }
 
-			ForceMeshUpdate();
-		}
-		#endif
+            for (int i = 0; i < pointListsProperties.PointListProperties.Length; i++)
+                pointListsProperties.PointListProperties[i].SetPoints();
 
-		protected override void OnPopulateMesh(VertexHelper vh)
-		{
-			vh.Clear();
+            for (int i = 0; i < pointListsProperties.PointListProperties.Length; i++)
+            {
+                if (
+                    pointListsProperties.PointListProperties[i].Positions != null &&
+                    pointListsProperties.PointListProperties[i].Positions.Length > 1
+                )
+                {
+                    antiAliasingProperties.UpdateAdjusted(canvas);
 
-			OutlineProperties.UpdateAdjusted();
-			ShadowProperties.UpdateAdjusted();
+                    // shadows
+                    if (shadowProperties.ShadowsEnabled)
+                    {
+                        for (int j = 0; j < shadowProperties.Shadows.Length; j++)
+                        {
+                            _edgeGradientData.SetActiveData(
+                                1.0f - shadowProperties.Shadows[j].Softness,
+                                shadowProperties.Shadows[j].Size,
+                                antiAliasingProperties.Adjusted
+                            );
 
-			if (pointsListData == null || pointsListData.Length != PointListsProperties.PointListProperties.Length)
-			{
-				System.Array.Resize(ref pointsListData, PointListsProperties.PointListProperties.Length);
+                            ShapeUtils.Lines.AddLine(
+                                ref vh,
+                                lineProperties,
+                                pointListsProperties.PointListProperties[i],
+                                shadowProperties.GetCenterOffset(GeoUtils.ZeroV2, j),
+                                outlineProperties,
+                                shadowProperties.Shadows[j].Color,
+                                GeoUtils.ZeroV2,
+                                ref _pointsListData[i],
+                                _edgeGradientData
+                            );
+                        }
+                    }
+                }
+            }
 
-				for (int i = 0; i < pointsListData.Length; i++)
-				{
-					pointsListData[i].NeedsUpdate = true;
-					PointListsProperties.PointListProperties[i].GeneratorData.NeedsUpdate = true;
-				}
-			}
+            for (int i = 0; i < pointListsProperties.PointListProperties.Length; i++)
+            {
+                if (
+                    pointListsProperties.PointListProperties[i].Positions != null &&
+                    pointListsProperties.PointListProperties[i].Positions.Length > 1
+                )
+                {
+                    // fill
+                    if (shadowProperties.ShowShape)
+                    {
+                        if (antiAliasingProperties.Adjusted > 0.0f)
+                        {
+                            _edgeGradientData.SetActiveData(
+                                1.0f,
+                                0.0f,
+                                antiAliasingProperties.Adjusted
+                            );
+                        }
+                        else
+                        {
+                            _edgeGradientData.Reset();
+                        }
 
-			for (int i = 0; i < PointListsProperties.PointListProperties.Length; i++)
-				PointListsProperties.PointListProperties[i].SetPoints();
+                        ShapeUtils.Lines.AddLine(
+                            ref vh,
+                            lineProperties,
+                            pointListsProperties.PointListProperties[i],
+                            GeoUtils.ZeroV2,
+                            outlineProperties,
+                            shapeProperties.FillColor,
+                            GeoUtils.ZeroV2,
+                            ref _pointsListData[i],
+                            _edgeGradientData
+                        );
+                    }
+                }
+            }
+        }
 
-			for (int i = 0; i < PointListsProperties.PointListProperties.Length; i++)
-			{
-				if (
-					PointListsProperties.PointListProperties[i].Positions != null &&
-					PointListsProperties.PointListProperties[i].Positions.Length > 1
-				) {
-					AntiAliasingProperties.UpdateAdjusted(canvas);
+        protected override void UpdateMaterial()
+        {
+            base.UpdateMaterial();
 
-					// shadows
-					if (ShadowProperties.ShadowsEnabled)
-					{
-						for (int j = 0; j < ShadowProperties.Shadows.Length; j++)
-						{
-							edgeGradientData.SetActiveData(
-								1.0f - ShadowProperties.Shadows[j].Softness,
-								ShadowProperties.Shadows[j].Size,
-								AntiAliasingProperties.Adjusted
-							);
+            // check if this sprite has an associated alpha texture (generated when splitting RGBA = RGB + A as two textures without alpha)
 
-							ShapeUtils.Lines.AddLine(
-								ref vh,
-								LineProperties,
-								PointListsProperties.PointListProperties[i],
-								ShadowProperties.GetCenterOffset(GeoUtils.ZeroV2, j),
-								OutlineProperties,
-								ShadowProperties.Shadows[j].Color,
-								GeoUtils.ZeroV2,
-								ref pointsListData[i],
-								edgeGradientData
-							);
-						}
-					}
-				}
-			}
+            if (Sprite == null)
+            {
+                canvasRenderer.SetAlphaTexture(null);
+                return;
+            }
 
-			for (int i = 0; i < PointListsProperties.PointListProperties.Length; i++)
-			{
-				if (
-					PointListsProperties.PointListProperties[i].Positions != null &&
-					PointListsProperties.PointListProperties[i].Positions.Length > 1
-				) {
-					// fill
-					if (ShadowProperties.ShowShape)
-					{
-						if (AntiAliasingProperties.Adjusted > 0.0f)
-						{
-							edgeGradientData.SetActiveData(
-								1.0f,
-								0.0f,
-								AntiAliasingProperties.Adjusted
-							);
-						}
-						else
-						{
-							edgeGradientData.Reset();
-						}
+            Texture2D alphaTex = Sprite.associatedAlphaSplitTexture;
 
-						ShapeUtils.Lines.AddLine(
-							ref vh,
-							LineProperties,
-							PointListsProperties.PointListProperties[i],
-							GeoUtils.ZeroV2,
-							OutlineProperties,
-							ShapeProperties.FillColor,
-							GeoUtils.ZeroV2,
-							ref pointsListData[i],
-							edgeGradientData
-						);
-					}
-				}
-			}
+            if (alphaTex != null)
+            {
+                canvasRenderer.SetAlphaTexture(alphaTex);
+            }
+        }
 
+        public override Texture mainTexture
+        {
+            get
+            {
+                if (Sprite == null)
+                {
+                    if (material != null && material.mainTexture != null)
+                    {
+                        return material.mainTexture;
+                    }
 
-		}
+                    return s_WhiteTexture;
+                }
 
-		protected override void UpdateMaterial()
-		{
-			base.UpdateMaterial();
-
-			// check if this sprite has an associated alpha texture (generated when splitting RGBA = RGB + A as two textures without alpha)
-
-			if (Sprite == null)
-			{
-				canvasRenderer.SetAlphaTexture(null);
-				return;
-			}
-
-			Texture2D alphaTex = Sprite.associatedAlphaSplitTexture;
-
-			if (alphaTex != null)
-			{
-				canvasRenderer.SetAlphaTexture(alphaTex);
-			}
-		}
-
-		public override Texture mainTexture
-		{
-			get
-			{
-				if (Sprite == null)
-				{
-					if (material != null && material.mainTexture != null)
-					{
-						return material.mainTexture;
-					}
-					return s_WhiteTexture;
-				}
-
-				return Sprite.texture;
-			}
-		}
-
-	}
+                return Sprite.texture;
+            }
+        }
+    }
 }
