@@ -8,7 +8,7 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 			ref Vector2[] positions,
 			PointsList.PointListGeneratorData data
 		) {
-			switch (data.Generator) {
+			switch (data.generator) {
 				case PointsList.PointListGeneratorData.Generators.Custom:
 					break;
 
@@ -53,10 +53,10 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 				positions = new Vector2[4];
 			}
 
-			float halfWidth = data.Width * 0.5f;
-			float halfHeight = data.Height * 0.5f;
+			float halfWidth = data.width * 0.5f;
+			float halfHeight = data.height * 0.5f;
 
-			int offset = data.IntStartOffset % 4;
+			int offset = data.intStartOffset % 4;
 
 			offset = 4 + offset;
 			offset %= 4;
@@ -69,20 +69,20 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 				switch (index)
 				{
 					case 0:
-						positions[i].x = data.Center.x - halfWidth;
-						positions[i].y = data.Center.y + halfHeight;
+						positions[i].x = data.center.x - halfWidth;
+						positions[i].y = data.center.y + halfHeight;
 						break;
 					case 1:
-						positions[i].x = data.Center.x + halfWidth;
-						positions[i].y = data.Center.y + halfHeight;
+						positions[i].x = data.center.x + halfWidth;
+						positions[i].y = data.center.y + halfHeight;
 						break;
 					case 2:
-						positions[i].x = data.Center.x + halfWidth;
-						positions[i].y = data.Center.y - halfHeight;
+						positions[i].x = data.center.x + halfWidth;
+						positions[i].y = data.center.y - halfHeight;
 						break;
 					case 3:
-						positions[i].x = data.Center.x - halfWidth;
-						positions[i].y = data.Center.y - halfHeight;
+						positions[i].x = data.center.x - halfWidth;
+						positions[i].y = data.center.y - halfHeight;
 						break;
 				}
 			}
@@ -92,10 +92,10 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 			ref Vector2[] positions,
 			PointsList.PointListGeneratorData data
 		) {
-			float absLength = Mathf.Abs(data.Length);
+			float absLength = Mathf.Abs(data.length);
 			
-			int numFullSteps = Mathf.CeilToInt(data.Resolution * absLength);
-			float partStepAmount = 1.0f + ((data.Resolution * absLength) - (float)numFullSteps);
+			int numFullSteps = Mathf.CeilToInt(data.resolution * absLength);
+			float partStepAmount = 1.0f + ((data.resolution * absLength) - (float)numFullSteps);
 
 			bool addPartialStep = partStepAmount >= 0.0001f;
 
@@ -105,7 +105,7 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 				resolution++;
 			}
 
-			if (data.CenterPoint)
+			if (data.centerPoint)
 			{
 				resolution++;
 			}
@@ -117,24 +117,24 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 				positions = new Vector2[resolution];
 			}
 
-			if (data.CenterPoint)
+			if (data.centerPoint)
 			{
-				positions[resolution-1].x = data.Center.x;
-				positions[resolution-1].y = data.Center.y;
+				positions[resolution-1].x = data.center.x;
+				positions[resolution-1].y = data.center.y;
 			}
 
-			float halfWidth = Mathf.Max(0.001f, data.Width * 0.5f);
-			float halfHeight = Mathf.Max(0.001f, data.Height * 0.5f);
+			float halfWidth = Mathf.Max(0.001f, data.width * 0.5f);
+			float halfHeight = Mathf.Max(0.001f, data.height * 0.5f);
 
-			float angle = data.FloatStartOffset * GeoUtils.TwoPI;
-			float angleIncrement = (GeoUtils.TwoPI) / (float)(data.Resolution);
+			float angle = data.floatStartOffset * GeoUtils.TwoPI;
+			float angleIncrement = (GeoUtils.TwoPI) / (float)(data.resolution);
 
-			if (data.SkipLastPosition)
+			if (data.skipLastPosition)
 			{
-				angleIncrement = (GeoUtils.TwoPI) / ((float)data.Resolution + 1);
+				angleIncrement = (GeoUtils.TwoPI) / ((float)data.resolution + 1);
 			}
 
-			angleIncrement *= Mathf.Sign(data.Direction);
+			angleIncrement *= Mathf.Sign(data.direction);
 
 			float relCompletion;
 
@@ -142,8 +142,8 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 			{
 				relCompletion = (float)i / (float)resolution;
 
-				positions[i].x = data.Center.x + Mathf.Sin(angle) * (halfWidth + (halfWidth * data.EndRadius * relCompletion));
-				positions[i].y = data.Center.y + Mathf.Cos(angle) * (halfHeight + (halfHeight * data.EndRadius * relCompletion));
+				positions[i].x = data.center.x + Mathf.Sin(angle) * (halfWidth + (halfWidth * data.endRadius * relCompletion));
+				positions[i].y = data.center.y + Mathf.Cos(angle) * (halfHeight + (halfHeight * data.endRadius * relCompletion));
 
 				angle += angleIncrement;
 			}
@@ -153,8 +153,8 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 			{
 				relCompletion = ((float)numFullSteps + partStepAmount) / (float)resolution;
 //				angle -= angleIncrement * (1.0f - partStepAmount);
-				positions[numFullSteps].x = data.Center.x + Mathf.Sin(angle) * (halfWidth + (halfWidth * data.EndRadius * relCompletion));
-				positions[numFullSteps].y = data.Center.y + Mathf.Cos(angle) * (halfHeight + (halfHeight * data.EndRadius * relCompletion));
+				positions[numFullSteps].x = data.center.x + Mathf.Sin(angle) * (halfWidth + (halfWidth * data.endRadius * relCompletion));
+				positions[numFullSteps].y = data.center.y + Mathf.Cos(angle) * (halfHeight + (halfHeight * data.endRadius * relCompletion));
 
 				int prevStep = Mathf.Max(numFullSteps-1, 0);
 
@@ -168,9 +168,9 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 			ref Vector2[] positions,
 			PointsList.PointListGeneratorData data
 		) {
-			int resolution = data.FloatValues.Length;
+			int resolution = data.floatValues.Length;
 
-			if (data.FloatValues.Length < 3)
+			if (data.floatValues.Length < 3)
 				return;
 
 			if (
@@ -180,21 +180,21 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 				positions = new Vector2[resolution];
 			}
 
-			float angle = data.FloatStartOffset * GeoUtils.TwoPI;
+			float angle = data.floatStartOffset * GeoUtils.TwoPI;
 			float angleIncrement = GeoUtils.TwoPI / (float)(resolution);
 
 			for (int i = 0; i < resolution; i++)
 			{
 				float value = Mathf.InverseLerp(
-					data.MinFloatValue,
-					data.MaxFloatValue,
-					data.FloatValues[i]
+					data.minFloatValue,
+					data.maxFloatValue,
+					data.floatValues[i]
 				);
 
-				value *= data.Radius;
+				value *= data.radius;
 
-				positions[i].x = data.Center.x + Mathf.Sin(angle) * value;
-				positions[i].y = data.Center.y + Mathf.Cos(angle) * value;
+				positions[i].x = data.center.x + Mathf.Sin(angle) * value;
+				positions[i].y = data.center.y + Mathf.Cos(angle) * value;
 
 				angle += angleIncrement;
 			}
@@ -204,12 +204,12 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 			ref Vector2[] positions,
 			PointsList.PointListGeneratorData data
 		) {
-			int resolution = data.FloatValues.Length;
+			int resolution = data.floatValues.Length;
 
-			if (data.FloatValues.Length < 2)
+			if (data.floatValues.Length < 2)
 				return;
 
-			if (data.CenterPoint)
+			if (data.centerPoint)
 				resolution += 2;
 
 			if (
@@ -219,35 +219,35 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 				positions = new Vector2[resolution];
 			}
 
-			float xPos = data.Center.x + data.Width * -0.5f;
+			float xPos = data.center.x + data.width * -0.5f;
 
-			float xStep = data.Width / (float)(data.FloatValues.Length - 1.0f);
+			float xStep = data.width / (float)(data.floatValues.Length - 1.0f);
 
-			for (int i = 0; i < data.FloatValues.Length; i++)
+			for (int i = 0; i < data.floatValues.Length; i++)
 			{
 				float value = Mathf.InverseLerp(
-					data.MinFloatValue,
-					data.MaxFloatValue,
-					data.FloatValues[i]
+					data.minFloatValue,
+					data.maxFloatValue,
+					data.floatValues[i]
 				);
 
 				value -= 0.5f;
 
-				value *= data.Height;
+				value *= data.height;
 
 				positions[i].x = xPos;
-				positions[i].y = data.Center.y + value;
+				positions[i].y = data.center.y + value;
 
 				xPos += xStep;
 			}
 
-			if (data.CenterPoint)
+			if (data.centerPoint)
 			{
-				positions[data.FloatValues.Length].x = data.Center.x + data.Width * 0.5f;
-				positions[data.FloatValues.Length].y = data.Center.y - data.Height * 0.5f;
+				positions[data.floatValues.Length].x = data.center.x + data.width * 0.5f;
+				positions[data.floatValues.Length].y = data.center.y - data.height * 0.5f;
 
-				positions[data.FloatValues.Length + 1].x = data.Center.x + data.Width * -0.5f;
-				positions[data.FloatValues.Length + 1].y = positions[data.FloatValues.Length].y;
+				positions[data.floatValues.Length + 1].x = data.center.x + data.width * -0.5f;
+				positions[data.floatValues.Length + 1].y = positions[data.floatValues.Length].y;
 			}
 		}
 
@@ -262,23 +262,23 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 				positions = new Vector2[2];
 			}
 
-			float xDir = Mathf.Sin(data.Angle * GeoUtils.TwoPI);
-			float yDir = Mathf.Cos(data.Angle * GeoUtils.TwoPI);
+			float xDir = Mathf.Sin(data.angle * GeoUtils.TwoPI);
+			float yDir = Mathf.Cos(data.angle * GeoUtils.TwoPI);
 
-			float startOffset = data.Length * data.FloatStartOffset;
+			float startOffset = data.length * data.floatStartOffset;
 
-			positions[0].x = data.Center.x + xDir * startOffset;
-			positions[0].y = data.Center.y + yDir * startOffset;
+			positions[0].x = data.center.x + xDir * startOffset;
+			positions[0].y = data.center.y + yDir * startOffset;
 
-			positions[1].x = data.Center.x + xDir * (data.Length + startOffset);
-			positions[1].y = data.Center.y + yDir * (data.Length + startOffset);
+			positions[1].x = data.center.x + xDir * (data.length + startOffset);
+			positions[1].y = data.center.y + yDir * (data.length + startOffset);
 		}
 
 		public static void SetPointsStar(
 			ref Vector2[] positions,
 			PointsList.PointListGeneratorData data
 		) {
-			int resolution = data.Resolution * 2;
+			int resolution = data.resolution * 2;
 
 			if (
 				positions == null ||
@@ -287,26 +287,26 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 				positions = new Vector2[resolution];
 			}
 
-			float angle = data.FloatStartOffset * GeoUtils.TwoPI;
-			float angleIncrement = (GeoUtils.TwoPI * data.Length) / (float)resolution;
+			float angle = data.floatStartOffset * GeoUtils.TwoPI;
+			float angleIncrement = (GeoUtils.TwoPI * data.length) / (float)resolution;
 
-			float outerRadiusX = data.Width;
-			float outerRadiusY = data.Height;
+			float outerRadiusX = data.width;
+			float outerRadiusY = data.height;
 
-			float innerRadiusX = data.EndRadius * outerRadiusX;
-			float innerRadiusY = data.EndRadius * outerRadiusX;
+			float innerRadiusX = data.endRadius * outerRadiusX;
+			float innerRadiusY = data.endRadius * outerRadiusX;
 
 			for (int i = 0; i < resolution; i+= 2)
 			{
 				// add outer point
-				positions[i].x = data.Center.x + Mathf.Sin(angle) * outerRadiusX;
-				positions[i].y = data.Center.y + Mathf.Cos(angle) * outerRadiusY;
+				positions[i].x = data.center.x + Mathf.Sin(angle) * outerRadiusX;
+				positions[i].y = data.center.y + Mathf.Cos(angle) * outerRadiusY;
 
 				angle += angleIncrement;
 
 				// add inner point
-				positions[i+1].x = data.Center.x + Mathf.Sin(angle) * innerRadiusX;
-				positions[i+1].y = data.Center.y + Mathf.Cos(angle) * innerRadiusY;
+				positions[i+1].x = data.center.x + Mathf.Sin(angle) * innerRadiusX;
+				positions[i+1].y = data.center.y + Mathf.Cos(angle) * innerRadiusY;
 
 				angle += angleIncrement;
 			}
@@ -316,7 +316,7 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 			ref Vector2[] positions,
 			PointsList.PointListGeneratorData data
 		) {
-			int resolution = data.Resolution * 4;
+			int resolution = data.resolution * 4;
 
 			if (
 				positions == null ||
@@ -325,39 +325,39 @@ namespace UIShapeKit.ShapeUtils.PointsGenerators
 				positions = new Vector2[resolution];
 			}
 
-			float angle = data.FloatStartOffset * GeoUtils.TwoPI;
-			float angleIncrement = GeoUtils.TwoPI / (float)data.Resolution;
+			float angle = data.floatStartOffset * GeoUtils.TwoPI;
+			float angleIncrement = GeoUtils.TwoPI / (float)data.resolution;
 
-			float outerRadiusX = data.Width;
-			float outerRadiusY = data.Height;
+			float outerRadiusX = data.width;
+			float outerRadiusY = data.height;
 
-			float innerRadiusX = data.EndRadius * outerRadiusX;
-			float innerRadiusY = data.EndRadius * outerRadiusY;
+			float innerRadiusX = data.endRadius * outerRadiusX;
+			float innerRadiusY = data.endRadius * outerRadiusY;
 
-			float bottomAngleOffset = angleIncrement * 0.49f * data.InnerScaler;
-			float topAngleOffset = angleIncrement * 0.49f * data.OuterScaler;
+			float bottomAngleOffset = angleIncrement * 0.49f * data.innerScaler;
+			float topAngleOffset = angleIncrement * 0.49f * data.outerScaler;
 
 			int index;
 
-			for (int i = 0; i < data.Resolution; i++)
+			for (int i = 0; i < data.resolution; i++)
 			{
 				index = i * 4;
 
 				// add first inner point
-				positions[index].x = data.Center.x + Mathf.Sin(angle - bottomAngleOffset) * innerRadiusX;
-				positions[index].y = data.Center.y + Mathf.Cos(angle - bottomAngleOffset) * innerRadiusY;
+				positions[index].x = data.center.x + Mathf.Sin(angle - bottomAngleOffset) * innerRadiusX;
+				positions[index].y = data.center.y + Mathf.Cos(angle - bottomAngleOffset) * innerRadiusY;
 
 				// add first outer point
-				positions[index + 1].x = data.Center.x + Mathf.Sin(angle - topAngleOffset) * outerRadiusX;
-				positions[index + 1].y = data.Center.y + Mathf.Cos(angle - topAngleOffset) * outerRadiusY;
+				positions[index + 1].x = data.center.x + Mathf.Sin(angle - topAngleOffset) * outerRadiusX;
+				positions[index + 1].y = data.center.y + Mathf.Cos(angle - topAngleOffset) * outerRadiusY;
 
 				// add secont outer point
-				positions[index + 2].x = data.Center.x + Mathf.Sin(angle + topAngleOffset) * outerRadiusX;
-				positions[index + 2].y = data.Center.y + Mathf.Cos(angle + topAngleOffset) * outerRadiusY;
+				positions[index + 2].x = data.center.x + Mathf.Sin(angle + topAngleOffset) * outerRadiusX;
+				positions[index + 2].y = data.center.y + Mathf.Cos(angle + topAngleOffset) * outerRadiusY;
 
 				// add second inner point
-				positions[index + 3].x = data.Center.x + Mathf.Sin(angle + bottomAngleOffset) * innerRadiusX;
-				positions[index + 3].y = data.Center.y + Mathf.Cos(angle + bottomAngleOffset) * innerRadiusY;
+				positions[index + 3].x = data.center.x + Mathf.Sin(angle + bottomAngleOffset) * innerRadiusX;
+				positions[index + 3].y = data.center.y + Mathf.Cos(angle + bottomAngleOffset) * innerRadiusY;
 
 				angle += angleIncrement;
 			}

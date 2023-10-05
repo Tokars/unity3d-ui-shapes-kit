@@ -1,4 +1,5 @@
-﻿using UIShapeKit.ShapeUtils;
+﻿using UIShapeKit.Prop;
+using UIShapeKit.ShapeUtils;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,29 +8,29 @@ namespace UIShapeKit.Shapes
     [AddComponentMenu("UI/Shapes/Line", 30), RequireComponent(typeof(CanvasRenderer))]
     public class Line : MaskableGraphic, IShape
     {
-        [SerializeField] public GeoUtils.ShapeProperties shapeProperties = new();
+        [SerializeField] public ShapeProperties shapeProperties = new();
         [SerializeField] public PointsList.PointListsProperties pointListsProperties = new();
         [SerializeField] public Lines.LineProperties lineProperties = new();
-        [SerializeField] public GeoUtils.OutlineProperties outlineProperties = new();
-        [SerializeField] public GeoUtils.ShadowsProperties shadowProperties = new();
-        [SerializeField] public GeoUtils.AntiAliasingProperties antiAliasingProperties = new();
+        [SerializeField] public OutlineProperties outlineProperties = new();
+        [SerializeField] public ShadowsProperties shadowProperties = new();
+        [SerializeField] public AntiAliasingProperties antiAliasingProperties = new();
 
         public Sprite Sprite;
 
-        private PointsList.PointsData[] _pointsListData =  {new ()};
+        private PointsList.PointsData[] _pointsListData = {new()};
         private GeoUtils.EdgeGradientData _edgeGradientData;
 
         public void ForceMeshUpdate()
         {
-            if (_pointsListData == null || _pointsListData.Length != pointListsProperties.PointListProperties.Length)
+            if (_pointsListData == null || _pointsListData.Length != pointListsProperties.pointListProperties.Length)
             {
-                System.Array.Resize(ref _pointsListData, pointListsProperties.PointListProperties.Length);
+                System.Array.Resize(ref _pointsListData, pointListsProperties.pointListProperties.Length);
             }
 
             for (int i = 0; i < _pointsListData.Length; i++)
             {
                 _pointsListData[i].NeedsUpdate = true;
-                pointListsProperties.PointListProperties[i].GeneratorData.NeedsUpdate = true;
+                pointListsProperties.pointListProperties[i].generatorData.needsUpdate = true;
             }
 
             SetVerticesDirty();
@@ -54,25 +55,25 @@ namespace UIShapeKit.Shapes
             outlineProperties.UpdateAdjusted();
             shadowProperties.UpdateAdjusted();
 
-            if (_pointsListData == null || _pointsListData.Length != pointListsProperties.PointListProperties.Length)
+            if (_pointsListData == null || _pointsListData.Length != pointListsProperties.pointListProperties.Length)
             {
-                System.Array.Resize(ref _pointsListData, pointListsProperties.PointListProperties.Length);
+                System.Array.Resize(ref _pointsListData, pointListsProperties.pointListProperties.Length);
 
                 for (int i = 0; i < _pointsListData.Length; i++)
                 {
                     _pointsListData[i].NeedsUpdate = true;
-                    pointListsProperties.PointListProperties[i].GeneratorData.NeedsUpdate = true;
+                    pointListsProperties.pointListProperties[i].generatorData.needsUpdate = true;
                 }
             }
 
-            for (int i = 0; i < pointListsProperties.PointListProperties.Length; i++)
-                pointListsProperties.PointListProperties[i].SetPoints();
+            for (int i = 0; i < pointListsProperties.pointListProperties.Length; i++)
+                pointListsProperties.pointListProperties[i].SetPoints();
 
-            for (int i = 0; i < pointListsProperties.PointListProperties.Length; i++)
+            for (int i = 0; i < pointListsProperties.pointListProperties.Length; i++)
             {
                 if (
-                    pointListsProperties.PointListProperties[i].Positions != null &&
-                    pointListsProperties.PointListProperties[i].Positions.Length > 1
+                    pointListsProperties.pointListProperties[i].positions != null &&
+                    pointListsProperties.pointListProperties[i].positions.Length > 1
                 )
                 {
                     antiAliasingProperties.UpdateAdjusted(canvas);
@@ -80,21 +81,21 @@ namespace UIShapeKit.Shapes
                     // shadows
                     if (shadowProperties.ShadowsEnabled)
                     {
-                        for (int j = 0; j < shadowProperties.Shadows.Length; j++)
+                        for (int j = 0; j < shadowProperties.shadows.Length; j++)
                         {
                             _edgeGradientData.SetActiveData(
-                                1.0f - shadowProperties.Shadows[j].Softness,
-                                shadowProperties.Shadows[j].Size,
+                                1.0f - shadowProperties.shadows[j].softness,
+                                shadowProperties.shadows[j].size,
                                 antiAliasingProperties.Adjusted
                             );
 
                             ShapeUtils.Lines.AddLine(
                                 ref vh,
                                 lineProperties,
-                                pointListsProperties.PointListProperties[i],
+                                pointListsProperties.pointListProperties[i],
                                 shadowProperties.GetCenterOffset(GeoUtils.ZeroV2, j),
                                 outlineProperties,
-                                shadowProperties.Shadows[j].Color,
+                                shadowProperties.shadows[j].color,
                                 GeoUtils.ZeroV2,
                                 ref _pointsListData[i],
                                 _edgeGradientData
@@ -104,15 +105,15 @@ namespace UIShapeKit.Shapes
                 }
             }
 
-            for (int i = 0; i < pointListsProperties.PointListProperties.Length; i++)
+            for (int i = 0; i < pointListsProperties.pointListProperties.Length; i++)
             {
                 if (
-                    pointListsProperties.PointListProperties[i].Positions != null &&
-                    pointListsProperties.PointListProperties[i].Positions.Length > 1
+                    pointListsProperties.pointListProperties[i].positions != null &&
+                    pointListsProperties.pointListProperties[i].positions.Length > 1
                 )
                 {
                     // fill
-                    if (shadowProperties.ShowShape)
+                    if (shadowProperties.showShape)
                     {
                         if (antiAliasingProperties.Adjusted > 0.0f)
                         {
@@ -130,10 +131,10 @@ namespace UIShapeKit.Shapes
                         ShapeUtils.Lines.AddLine(
                             ref vh,
                             lineProperties,
-                            pointListsProperties.PointListProperties[i],
+                            pointListsProperties.pointListProperties[i],
                             GeoUtils.ZeroV2,
                             outlineProperties,
-                            shapeProperties.FillColor,
+                            shapeProperties.fillColor,
                             GeoUtils.ZeroV2,
                             ref _pointsListData[i],
                             _edgeGradientData

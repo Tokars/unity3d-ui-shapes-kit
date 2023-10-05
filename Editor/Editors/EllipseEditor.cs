@@ -8,7 +8,7 @@ namespace UIShapeKit.Editor.Editors
     [CanEditMultipleObjects]
     public class EllipseEditor : GraphicEditor
     {
-        Ellipse ellipse;
+        private Ellipse _ellipse;
 
         protected SerializedProperty MaterialProp;
         protected SerializedProperty SpriteProp;
@@ -22,17 +22,17 @@ namespace UIShapeKit.Editor.Editors
 
         protected override void OnEnable()
         {
-            ellipse = (Ellipse)target;
+            _ellipse = (Ellipse)target;
 
             MaterialProp = serializedObject.FindProperty("m_Material");
             SpriteProp = serializedObject.FindProperty("Sprite");
             RaycastTargetProp = serializedObject.FindProperty("m_RaycastTarget");
 
-            ShapePropertiesProp = serializedObject.FindProperty(nameof(ellipse.shapeProperties));
-            EllipsePropertiesProp = serializedObject.FindProperty(nameof(ellipse.ellipseProperties));
-            OutlinePropertiesProp = serializedObject.FindProperty(nameof(ellipse.outlineProperties));
-            ShadowPropertiesProp = serializedObject.FindProperty(nameof(ellipse.shadowProperties));
-            AntiAliasingPropertiesProp = serializedObject.FindProperty(nameof(ellipse.antiAliasingProperties));
+            ShapePropertiesProp = serializedObject.FindProperty(nameof(_ellipse.shapeProperties));
+            EllipsePropertiesProp = serializedObject.FindProperty(nameof(_ellipse.ellipseProperties));
+            OutlinePropertiesProp = serializedObject.FindProperty(nameof(_ellipse.outlineProperties));
+            ShadowPropertiesProp = serializedObject.FindProperty(nameof(_ellipse.shadowProperties));
+            AntiAliasingPropertiesProp = serializedObject.FindProperty(nameof(_ellipse.antiAliasingProperties));
         }
 
         protected override void OnDisable()
@@ -52,7 +52,7 @@ namespace UIShapeKit.Editor.Editors
             EditorGUILayout.PropertyField(ShapePropertiesProp, true);
             EditorGUILayout.PropertyField(EllipsePropertiesProp, true);
 
-            if (ellipse.shapeProperties.DrawOutline)
+            if (_ellipse.shapeProperties.drawOutline)
             {
                 EditorGUILayout.PropertyField(OutlinePropertiesProp, true);
             }

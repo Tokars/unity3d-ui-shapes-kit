@@ -25,9 +25,9 @@ namespace UIShapeKit.Editor.Editors
             _rectangle = (Rectangle)target;
 
             MaterialProp = serializedObject.FindProperty("m_Material");
-            SpriteProp = serializedObject.FindProperty("Sprite");
             RaycastTargetProp = serializedObject.FindProperty("m_RaycastTarget");
 
+            SpriteProp = serializedObject.FindProperty(nameof(_rectangle.sprite));
             ShapePropertiesProp = serializedObject.FindProperty(nameof(_rectangle.shapeProperties));
             RoundedPropertiesProp = serializedObject.FindProperty(nameof(_rectangle.roundedProperties));
             OutlinePropertiesProp = serializedObject.FindProperty(nameof(_rectangle.outlineProperties));
@@ -52,7 +52,7 @@ namespace UIShapeKit.Editor.Editors
             EditorGUILayout.PropertyField(ShapePropertiesProp, true);
             EditorGUILayout.PropertyField(RoundedPropertiesProp, true);
 
-            if (_rectangle.shapeProperties.DrawOutline)
+            if (_rectangle.shapeProperties.drawOutline)
             {
                 EditorGUILayout.PropertyField(OutlinePropertiesProp, true);
             }

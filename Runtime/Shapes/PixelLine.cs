@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UIShapeKit.Prop;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace UIShapeKit.Shapes
@@ -7,7 +8,7 @@ namespace UIShapeKit.Shapes
     public class PixelLine : MaskableGraphic, IShape
     {
         [SerializeField] public float lineWeight = 1.0f;
-        [SerializeField] public GeoUtils.SnappedPositionAndOrientationProperties snappedProperties = new();
+        [SerializeField] public SnappedPositionAndOrientationProperties snappedProperties = new();
 
         private Vector3 _center = Vector3.zero;
 
@@ -39,25 +40,25 @@ namespace UIShapeKit.Shapes
 
             float adjustedLineWeight = lineWeight * pixelSizeScaler;
 
-            switch (snappedProperties.Position)
+            switch (snappedProperties.position)
             {
-                case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Center:
+                case SnappedPositionAndOrientationProperties.PositionTypes.Center:
                     _center.x = pixelRect.center.x;
                     _center.y = pixelRect.center.y;
                     break;
-                case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Top:
+                case SnappedPositionAndOrientationProperties.PositionTypes.Top:
                     _center.x = pixelRect.center.x;
                     _center.y = pixelRect.yMax - adjustedLineWeight;
                     break;
-                case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Bottom:
+                case SnappedPositionAndOrientationProperties.PositionTypes.Bottom:
                     _center.x = pixelRect.center.x;
                     _center.y = pixelRect.yMin;
                     break;
-                case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Left:
+                case SnappedPositionAndOrientationProperties.PositionTypes.Left:
                     _center.x = pixelRect.xMin;
                     _center.y = pixelRect.center.y;
                     break;
-                case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Right:
+                case SnappedPositionAndOrientationProperties.PositionTypes.Right:
                     _center.x = pixelRect.xMax;
                     _center.y = pixelRect.center.y;
                     break;
@@ -68,15 +69,15 @@ namespace UIShapeKit.Shapes
             float width = 0.0f;
             float height = 0.0f;
 
-            switch (snappedProperties.Orientation)
+            switch (snappedProperties.orientation)
             {
-                case GeoUtils.SnappedPositionAndOrientationProperties.OrientationTypes.Horizontal:
+                case SnappedPositionAndOrientationProperties.OrientationTypes.Horizontal:
                     width = pixelRect.width;
                     height = adjustedLineWeight;
 
                     //				topLeft.x -= width * 0.5f + adjustedLineWeight;
                     break;
-                case GeoUtils.SnappedPositionAndOrientationProperties.OrientationTypes.Vertical:
+                case SnappedPositionAndOrientationProperties.OrientationTypes.Vertical:
                     width = adjustedLineWeight;
                     height = pixelRect.height;
 

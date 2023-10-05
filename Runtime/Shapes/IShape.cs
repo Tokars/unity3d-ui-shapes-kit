@@ -1,4 +1,4 @@
-﻿namespace UIShapeKit
+﻿namespace UIShapeKit.Shapes
 {
     public interface IShape
     {

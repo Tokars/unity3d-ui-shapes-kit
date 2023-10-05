@@ -5,11 +5,14 @@ namespace UIShapeKit
     [System.Serializable]
     public struct LinePoint
     {
-        public Vector2 point;
-        public bool isNextCurve;
-        public Vector2 nextCurveOffset;
-        public bool isPrvCurve;
-        public Vector2 prvCurveOffset;
+        [SerializeField] public Vector2 point;
+        [SerializeField] public bool isNextCurve;
+        [SerializeField] public Vector2 nextCurveOffset;
+        [SerializeField] public bool isPrvCurve;
+        [SerializeField] public Vector2 prvCurveOffset;
+        [SerializeField, Range(1, 100)] public int nextCurveDivideCount;
+        [SerializeField, Range(0, 200)] public float width;
+
 
         public Vector2 NextCurvePoint
         {
@@ -22,9 +25,6 @@ namespace UIShapeKit
             get => prvCurveOffset + point;
             set => prvCurveOffset = value - point;
         }
-
-        [Range(1, 100)] public int nextCurveDivideCount;
-        [Range(0, 200)] public float width;
 
         public float angle;
 

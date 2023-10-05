@@ -67,16 +67,16 @@ namespace UIShapeKit.Editor.Editors
         {
             Undo.RecordObject(_polygon, "test");
 
-            for (int i = 0; i < _pointListsProperties.PointListProperties.Length; i++)
+            for (int i = 0; i < _pointListsProperties.pointListProperties.Length; i++)
             {
                 if (
-                    _pointListsProperties.PointListProperties[i].ShowHandles &&
-                    _pointListsProperties.PointListProperties[i].GeneratorData.Generator ==
+                    _pointListsProperties.pointListProperties[i].showHandles &&
+                    _pointListsProperties.pointListProperties[i].generatorData.generator ==
                     PointsList.PointListGeneratorData.Generators.Custom
                 )
                 {
                     if (PointListDrawer.Draw(
-                            ref _pointListsProperties.PointListProperties[i].Positions,
+                            ref _pointListsProperties.pointListProperties[i].positions,
                             _rectTransform,
                             true,
                             3

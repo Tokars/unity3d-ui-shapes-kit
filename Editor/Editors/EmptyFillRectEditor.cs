@@ -1,25 +1,20 @@
-﻿using UnityEditor;
+﻿using UIShapeKit.Shapes;
+using UnityEditor;
 using UnityEditor.UI;
-using EmptyFillRect = UIShapeKit.Shapes.EmptyFillRect;
 
 namespace UIShapeKit.Editor.Editors
 {
-	[CustomEditor(typeof(EmptyFillRect))]
-	[CanEditMultipleObjects]
-	public class EmptyFillRectEditor : GraphicEditor
-	{
-		protected override void OnEnable()
-		{
-			base.OnEnable();
-		}
+    [CustomEditor(typeof(EmptyFillRect))]
+    [CanEditMultipleObjects]
+    public class EmptyFillRectEditor : GraphicEditor
+    {
+        public override void OnInspectorGUI()
+        {
+            serializedObject.Update();
 
-		public override void OnInspectorGUI()
-		{
-			serializedObject.Update();
+            RaycastControlsGUI();
 
-			RaycastControlsGUI();
-
-			serializedObject.ApplyModifiedProperties();
-		}
-	}
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
 }

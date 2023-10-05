@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UIShapeKit.Prop;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace UIShapeKit.ShapeUtils
@@ -322,7 +323,7 @@ namespace UIShapeKit.ShapeUtils
 			Vector2 radius,
 			ShapeUtils.Ellipses.EllipseProperties ellipseProperties,
 			ArcProperties arcProperties,
-			GeoUtils.OutlineProperties outlineProperties,
+			OutlineProperties outlineProperties,
 			Color32 color,
 			Vector2 uv,
 			ref GeoUtils.UnitPositionData unitPositionData,
@@ -340,8 +341,8 @@ namespace UIShapeKit.ShapeUtils
 				arcProperties.AdjustedDirection
 			);
 
-			radius.x += outlineProperties.GetCenterDistace();
-			radius.y += outlineProperties.GetCenterDistace();
+			radius.x += outlineProperties.GetCenterDistance();
+			radius.y += outlineProperties.GetCenterDistance();
 
 			float halfLineWeightOffset = (outlineProperties.HalfLineWeight + edgeGradientData.ShadowOffset) * edgeGradientData.InnerScale;
 

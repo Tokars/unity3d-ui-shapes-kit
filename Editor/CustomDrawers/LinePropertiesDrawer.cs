@@ -4,72 +4,75 @@ using LineProperties = UIShapeKit.ShapeUtils.Lines.LineProperties;
 
 namespace UIShapeKit.Editor.CustomDrawers
 {
-	[CustomPropertyDrawer(typeof(LineProperties))]
-	public class LinePropertiesDrawer : PropertyDrawer
-	{
-		public override void OnGUI (Rect position, SerializedProperty property, GUIContent label)
-		{
-			position.height = EditorGUIUtility.singleLineHeight;
-			property.isExpanded = EditorGUI.Foldout(position, property.isExpanded, label);
+    [CustomPropertyDrawer(typeof(LineProperties))]
+    public class LinePropertiesDrawer : PropertyDrawer
+    {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            position.height = EditorGUIUtility.singleLineHeight;
+            property.isExpanded = EditorGUI.Foldout(position, property.isExpanded, label);
 
-			if (!property.isExpanded)
-				return;
+            if (!property.isExpanded)
+                return;
 
-			EditorGUI.BeginProperty(position, label, property);
+            EditorGUI.BeginProperty(position, label, property);
 
-			LineProperties lineProperties = 
-				(LineProperties)fieldInfo.GetValue(property.serializedObject.targetObject);
+            LineProperties lineProperties =
+                (LineProperties)fieldInfo.GetValue(property.serializedObject.targetObject);
 
-			var indent = EditorGUI.indentLevel;
-			EditorGUI.indentLevel++;
+            var indent = EditorGUI.indentLevel;
+            EditorGUI.indentLevel++;
 
-			Rect propertyPosition = new Rect (position.x, position.y + EditorGUIUtility.singleLineHeight, position.width, EditorGUIUtility.singleLineHeight);
+            Rect propertyPosition = new Rect(position.x, position.y + EditorGUIUtility.singleLineHeight, position.width,
+                EditorGUIUtility.singleLineHeight);
 
-			EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative("Closed"), new GUIContent("Closed"));
-			propertyPosition.y += EditorGUIUtility.singleLineHeight * 1.25f;
+            EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative(nameof(lineProperties.closed)),
+                new GUIContent(nameof(lineProperties.closed)));
+            propertyPosition.y += EditorGUIUtility.singleLineHeight * 1.25f;
 
-			if (lineProperties.Closed)
-			{
-				EditorGUI.indentLevel--;
-				return;
-			}
+            if (lineProperties.closed)
+            {
+                EditorGUI.indentLevel--;
+                return;
+            }
 
-			EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative("LineCap"), new GUIContent("Cap"));
-			propertyPosition.y += EditorGUIUtility.singleLineHeight * 1.25f;
+            EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative(nameof(lineProperties.lineCap)), new GUIContent(nameof(lineProperties.lineCap)));
+            propertyPosition.y += EditorGUIUtility.singleLineHeight * 1.25f;
 
-			switch (lineProperties.LineCap)
-			{
-				case LineProperties.LineCapTypes.Round:
-					EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative("RoundedCapResolution"), new GUIContent("Resolution"));
-					break;
-			}
+            switch (lineProperties.lineCap)
+            {
+                case LineProperties.LineCapTypes.Round:
+                    EditorGUI.PropertyField(propertyPosition, property.FindPropertyRelative(nameof(lineProperties.roundedCapResolution)),
+                        new GUIContent(nameof(lineProperties.roundedCapResolution)));
+                    break;
+            }
 
-			EditorGUI.indentLevel = indent;
+            EditorGUI.indentLevel = indent;
 
-			EditorGUI.EndProperty ();
-		}
+            EditorGUI.EndProperty();
+        }
 
-		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-		{
-			if (!property.isExpanded)
-			{
-				return EditorGUIUtility.singleLineHeight;
-			}
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            if (!property.isExpanded)
+            {
+                return EditorGUIUtility.singleLineHeight;
+            }
 
-			LineProperties lineProperties = 
-				(LineProperties)fieldInfo.GetValue(property.serializedObject.targetObject);
+            LineProperties lineProperties =
+                (LineProperties)fieldInfo.GetValue(property.serializedObject.targetObject);
 
-			if (lineProperties.Closed)
-			{
-				return EditorGUIUtility.singleLineHeight * 2.0f;
-			}
+            if (lineProperties.closed)
+            {
+                return EditorGUIUtility.singleLineHeight * 2.0f;
+            }
 
-			if (lineProperties.LineCap != LineProperties.LineCapTypes.Round)
-			{
-				return EditorGUIUtility.singleLineHeight * 3.25f;
-			}
+            if (lineProperties.lineCap != LineProperties.LineCapTypes.Round)
+            {
+                return EditorGUIUtility.singleLineHeight * 3.25f;
+            }
 
-			return EditorGUIUtility.singleLineHeight * 6.5f;
-		}
-	}
+            return EditorGUIUtility.singleLineHeight * 6.5f;
+        }
+    }
 }

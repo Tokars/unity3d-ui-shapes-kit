@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UIShapeKit.Prop;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace UIShapeKit.Shapes
@@ -6,13 +7,13 @@ namespace UIShapeKit.Shapes
     [AddComponentMenu("UI/Shapes/Rectangle", 1), RequireComponent(typeof(CanvasRenderer))]
     public class Rectangle : MaskableGraphic, IShape
     {
-        [SerializeField] public GeoUtils.OutlineShapeProperties shapeProperties = new();
+        [SerializeField] public OutlineShapeProperties shapeProperties = new();
         [SerializeField] public ShapeUtils.RoundedRects.RoundedProperties roundedProperties = new();
-        [SerializeField] public GeoUtils.OutlineProperties outlineProperties = new();
-        [SerializeField] public GeoUtils.ShadowsProperties shadowProperties = new();
-        [SerializeField] public GeoUtils.AntiAliasingProperties antiAliasingProperties = new();
+        [SerializeField] public OutlineProperties outlineProperties = new();
+        [SerializeField] public ShadowsProperties shadowProperties = new();
+        [SerializeField] public AntiAliasingProperties antiAliasingProperties = new();
 
-        public Sprite Sprite;
+        [SerializeField] public Sprite sprite;
 
         private ShapeUtils.RoundedRects.RoundedCornerUnitPositionData _unitPositionData;
         private GeoUtils.EdgeGradientData _edgeGradientData;
@@ -48,13 +49,13 @@ namespace UIShapeKit.Shapes
             // draw fill shadows
             if (shadowProperties.ShadowsEnabled)
             {
-                if (shapeProperties.DrawFill && shapeProperties.DrawFillShadow)
+                if (shapeProperties.drawFill && shapeProperties.drawFillShadow)
                 {
-                    for (int i = 0; i < shadowProperties.Shadows.Length; i++)
+                    for (int i = 0; i < shadowProperties.shadows.Length; i++)
                     {
                         _edgeGradientData.SetActiveData(
-                            1.0f - shadowProperties.Shadows[i].Softness,
-                            shadowProperties.Shadows[i].Size,
+                            1.0f - shadowProperties.shadows[i].softness,
+                            shadowProperties.shadows[i].size,
                             antiAliasingProperties.Adjusted
                         );
 
@@ -64,7 +65,7 @@ namespace UIShapeKit.Shapes
                             pixelRect.width,
                             pixelRect.height,
                             roundedProperties,
-                            shadowProperties.Shadows[i].Color,
+                            shadowProperties.shadows[i].color,
                             GeoUtils.ZeroV2,
                             ref _unitPositionData,
                             _edgeGradientData
@@ -73,7 +74,7 @@ namespace UIShapeKit.Shapes
                 }
             }
 
-            if (shadowProperties.ShowShape && shapeProperties.DrawFill)
+            if (shadowProperties.showShape && shapeProperties.drawFill)
             {
                 if (antiAliasingProperties.Adjusted > 0.0f)
                 {
@@ -94,7 +95,7 @@ namespace UIShapeKit.Shapes
                     pixelRect.width,
                     pixelRect.height,
                     roundedProperties,
-                    shapeProperties.FillColor,
+                    shapeProperties.fillColor,
                     GeoUtils.ZeroV2,
                     ref _unitPositionData,
                     _edgeGradientData
@@ -104,13 +105,13 @@ namespace UIShapeKit.Shapes
             if (shadowProperties.ShadowsEnabled)
             {
                 // draw outline shadows
-                if (shapeProperties.DrawOutline && shapeProperties.DrawOutlineShadow)
+                if (shapeProperties.drawOutline && shapeProperties.drawOutlineShadow)
                 {
-                    for (int i = 0; i < shadowProperties.Shadows.Length; i++)
+                    for (int i = 0; i < shadowProperties.shadows.Length; i++)
                     {
                         _edgeGradientData.SetActiveData(
-                            1.0f - shadowProperties.Shadows[i].Softness,
-                            shadowProperties.Shadows[i].Size,
+                            1.0f - shadowProperties.shadows[i].softness,
+                            shadowProperties.shadows[i].size,
                             antiAliasingProperties.Adjusted
                         );
 
@@ -121,7 +122,7 @@ namespace UIShapeKit.Shapes
                             pixelRect.height,
                             outlineProperties,
                             roundedProperties,
-                            shadowProperties.Shadows[i].Color,
+                            shadowProperties.shadows[i].color,
                             GeoUtils.ZeroV2,
                             ref _unitPositionData,
                             _edgeGradientData
@@ -131,7 +132,7 @@ namespace UIShapeKit.Shapes
             }
 
             // fill
-            if (shadowProperties.ShowShape && shapeProperties.DrawOutline)
+            if (shadowProperties.showShape && shapeProperties.drawOutline)
             {
                 if (antiAliasingProperties.Adjusted > 0.0f)
                 {
@@ -153,7 +154,7 @@ namespace UIShapeKit.Shapes
                     pixelRect.height,
                     outlineProperties,
                     roundedProperties,
-                    shapeProperties.OutlineColor,
+                    shapeProperties.outlineColor,
                     GeoUtils.ZeroV2,
                     ref _unitPositionData,
                     _edgeGradientData
@@ -167,13 +168,13 @@ namespace UIShapeKit.Shapes
 
             // check if this sprite has an associated alpha texture (generated when splitting RGBA = RGB + A as two textures without alpha)
 
-            if (Sprite == null)
+            if (sprite == null)
             {
                 canvasRenderer.SetAlphaTexture(null);
                 return;
             }
 
-            Texture2D alphaTex = Sprite.associatedAlphaSplitTexture;
+            Texture2D alphaTex = sprite.associatedAlphaSplitTexture;
 
             if (alphaTex != null)
             {
@@ -185,7 +186,7 @@ namespace UIShapeKit.Shapes
         {
             get
             {
-                if (Sprite == null)
+                if (sprite == null)
                 {
                     if (material != null && material.mainTexture != null)
                     {
@@ -195,7 +196,7 @@ namespace UIShapeKit.Shapes
                     return s_WhiteTexture;
                 }
 
-                return Sprite.texture;
+                return sprite.texture;
             }
         }
     }

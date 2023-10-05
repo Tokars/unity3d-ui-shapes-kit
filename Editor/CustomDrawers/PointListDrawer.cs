@@ -3,229 +3,239 @@ using UnityEngine;
 
 namespace UIShapeKit.Editor.CustomDrawers
 {
-	public class PointListDrawer
-	{
+    public class PointListDrawer
+    {
+        private static Vector3 s_worldPosition;
+        private static Vector3 s_uiNormal = Vector3.forward;
+        private static Vector3 s_tmpUiPos = Vector3.zero;
+        private static Vector3 s_tmpUiPos2 = Vector3.zero;
 
-		static Vector3 worldPosition;
-		static Vector3 uiNormal = Vector3.forward;
-		static Vector3 tmpUiPos = Vector3.zero;
-		static Vector3 tmpUiPos2 = Vector3.zero;
+        private static Vector3 s_draggedPosition = Vector3.zero;
+        private static Vector2 s_offset = Vector3.zero;
 
-		static Vector3 draggedPosition = Vector3.zero;
-		static Vector2 offset = Vector3.zero;
+        public static bool Draw(
+            ref Vector2[] positions,
+            RectTransform rectTransform,
+            bool isClosed,
+            int minPoints
+        )
+        {
+            bool needsUpdate = false;
 
-		public static bool Draw(
-			ref Vector2[] positions,
-			RectTransform rectTransform,
-			bool isClosed,
-			int minPoints
-		) {
-			bool needsUpdate = false;
+            bool runDelete = Event.current.modifiers == EventModifiers.Control;
+            bool axisSnapping = Event.current.modifiers == EventModifiers.Shift;
 
-			bool runDelete = Event.current.modifiers == EventModifiers.Control;
-			bool axisSnapping = Event.current.modifiers == EventModifiers.Shift;
+            if (runDelete)
+            {
+                needsUpdate |= DrawRemovePointPosition(ref positions, rectTransform, minPoints);
+            }
+            else
+            {
+                for (int i = 0; i < positions.Length; i++)
+                {
+                    needsUpdate |= DrawUpdatePointPosition(ref positions[i], rectTransform, axisSnapping);
+                }
 
-			if (runDelete)
-			{
-				needsUpdate |= DrawRemovePointPosition(ref positions, rectTransform, minPoints);
-			}
-			else
-			{
+                needsUpdate |= DrawInbetweenButtons(ref positions, rectTransform, isClosed);
+            }
 
-				for (int i = 0; i < positions.Length; i++)
-				{
-					needsUpdate |= DrawUpdatePointPosition(ref positions[i], rectTransform, axisSnapping);
-				}
+            return needsUpdate;
+        }
 
-				needsUpdate |= DrawInbetweenButtons(ref positions, rectTransform, isClosed);
-			}
+        private static bool DrawUpdatePointPosition(
+            ref Vector2 position,
+            RectTransform rectTransform,
+            bool axisSnapping
+        )
+        {
+            s_worldPosition = rectTransform.TransformPoint(position);
 
-			return needsUpdate;
-		}
+            s_draggedPosition = rectTransform.InverseTransformPoint(
+                Handles.FreeMoveHandle(
+                    s_worldPosition,
+                    HandleUtility.GetHandleSize(s_worldPosition) * 0.1f,
+                    Vector3.zero,
+                    DrawPointHandle
+                )
+            );
 
-		static bool DrawUpdatePointPosition(
-			ref Vector2 position,
-			RectTransform rectTransform,
-			bool axisSnapping
-		) {
-			worldPosition = rectTransform.TransformPoint(position);
+            s_offset.x = s_draggedPosition.x - position.x;
+            s_offset.y = s_draggedPosition.y - position.y;
 
-			draggedPosition = rectTransform.InverseTransformPoint(
-				Handles.FreeMoveHandle(
-					worldPosition,
-					HandleUtility.GetHandleSize(worldPosition) * 0.1f,
-					Vector3.zero,
-					DrawPointHandle
-				)
-			);
+            /// TODO snapping
 
-			offset.x = draggedPosition.x - position.x;
-			offset.y = draggedPosition.y - position.y;
+            position.x += s_offset.x;
+            position.y += s_offset.y;
 
-			/// TODO snapping
+            return s_offset.x != 0.0f || s_offset.y != 0.0f;
+        }
 
-			position.x += offset.x;
-			position.y += offset.y;
+        private static bool DrawRemovePointPosition(
+            ref Vector2[] positions,
+            RectTransform rectTransform,
+            int minPoints
+        )
+        {
+            bool removedPoint = false;
 
-			return offset.x != 0.0f || offset.y != 0.0f;
-		}
+            for (int i = 0; i < positions.Length; i++)
+            {
+                s_worldPosition = rectTransform.TransformPoint(positions[i]);
 
-		static bool DrawRemovePointPosition(
-			ref Vector2[] positions,
-			RectTransform rectTransform,
-			int minPoints
-		) {
-			bool removedPoint = false;
+                float handleSize = HandleUtility.GetHandleSize(s_worldPosition) * 0.1f;
 
-			for (int i = 0; i < positions.Length; i++)
-			{
-				worldPosition = rectTransform.TransformPoint(positions[i]);
+                if (
+                    Handles.Button(s_worldPosition, Quaternion.identity, handleSize, handleSize,
+                        DrawRemovePointHandle) &&
+                    positions.Length > minPoints
+                )
+                {
+                    // shift other points
+                    for (int j = i; j < positions.Length - 1; j++)
+                    {
+                        positions[j] = positions[j + 1];
+                    }
 
-				float handleSize = HandleUtility.GetHandleSize(worldPosition) * 0.1f;
+                    System.Array.Resize(ref positions, positions.Length - 1);
 
-				if (
-					Handles.Button(worldPosition, Quaternion.identity, handleSize, handleSize, DrawRemovePointHandle) &&
-					positions.Length > minPoints
-				) {
-					// shift other points
-					for (int j = i; j < positions.Length - 1; j++)
-					{
-						positions[j] = positions[j + 1];
-					}
+                    removedPoint = true;
+                }
+            }
 
-					System.Array.Resize(ref positions, positions.Length - 1);
+            return removedPoint;
+        }
 
-					removedPoint = true;
-				}
-			}
+        private static bool DrawInbetweenButtons(
+            ref Vector2[] positions,
+            RectTransform rectTransform,
+            bool isClosed
+        )
+        {
+            bool addedPoint = false;
 
-			return removedPoint;
-		}
+            Handles.color = Color.red;
 
-		static bool DrawInbetweenButtons(
-			ref Vector2[] positions,
-			RectTransform rectTransform,
-			bool isClosed
-		) {
-			bool addedPoint = false;
+            float handleSize;
 
-			Handles.color = Color.red;
+            for (int i = positions.Length - 2; i >= 0; i--)
+            {
+                s_worldPosition.x = (positions[i].x + positions[i + 1].x) * 0.5f;
+                s_worldPosition.y = (positions[i].y + positions[i + 1].y) * 0.5f;
+                s_worldPosition.z = 0.0f;
 
-			float handleSize;
+                s_worldPosition = rectTransform.TransformPoint(s_worldPosition);
 
-			for (int i = positions.Length - 2; i >= 0; i--)
-			{
+                handleSize = HandleUtility.GetHandleSize(s_worldPosition) * 0.08f;
 
-				worldPosition.x = (positions[i].x + positions[i + 1].x) * 0.5f;
-				worldPosition.y = (positions[i].y + positions[i + 1].y) * 0.5f;
-				worldPosition.z = 0.0f;
+                if (
+                    Handles.Button(s_worldPosition, Quaternion.identity, handleSize, handleSize, DrawAddPointHandle)
+                )
+                {
+                    System.Array.Resize(ref positions, positions.Length + 1);
 
-				worldPosition =  rectTransform.TransformPoint(worldPosition);
+                    // shift other points
+                    for (int j = positions.Length - 1; j > i; j--)
+                    {
+                        positions[j] = positions[j - 1];
+                    }
 
-				handleSize = HandleUtility.GetHandleSize(worldPosition) * 0.08f;
+                    positions[i + 1] = rectTransform.InverseTransformPoint(s_worldPosition);
 
-				if (
-					Handles.Button(worldPosition, Quaternion.identity, handleSize, handleSize, DrawAddPointHandle)
-				) {
-					System.Array.Resize(ref positions, positions.Length + 1);
+                    addedPoint = true;
+                }
+            }
 
-					// shift other points
-					for (int j = positions.Length - 1; j > i; j--)
-					{
-						positions[j] = positions[j - 1];
-					}
+            if (isClosed)
+            {
+                s_worldPosition.x = (positions[0].x + positions[^1].x) * 0.5f;
+                s_worldPosition.y = (positions[0].y + positions[^1].y) * 0.5f;
+                s_worldPosition.z = 0.0f;
 
-					positions[i+1] = rectTransform.InverseTransformPoint(worldPosition);
+                s_worldPosition = rectTransform.TransformPoint(s_worldPosition);
 
-					addedPoint = true;
-				}
-			}
-			
-			if (isClosed)
-			{
-				worldPosition.x = (positions[0].x + positions[positions.Length - 1].x) * 0.5f;
-				worldPosition.y = (positions[0].y + positions[positions.Length - 1].y) * 0.5f;
-				worldPosition.z = 0.0f;
+                handleSize = HandleUtility.GetHandleSize(s_worldPosition) * 0.08f;
 
-				worldPosition =  rectTransform.TransformPoint(worldPosition);
+                if (
+                    Handles.Button(s_worldPosition, Quaternion.identity, handleSize, handleSize, DrawAddPointHandle)
+                )
+                {
+                    System.Array.Resize(ref positions, positions.Length + 1);
 
-				handleSize = HandleUtility.GetHandleSize(worldPosition) * 0.08f;
+                    positions[^1] = rectTransform.InverseTransformPoint(s_worldPosition);
 
-				if (
-					Handles.Button(worldPosition, Quaternion.identity, handleSize, handleSize, DrawAddPointHandle)
-				) {
-					System.Array.Resize(ref positions, positions.Length + 1);
+                    // slightly offset positionif there is a closed loop and the new point is right between the two other points
+                    if (isClosed && positions.Length == 3)
+                    {
+                        positions[^1].y += 0.1f;
+                    }
 
-					positions[positions.Length - 1] = rectTransform.InverseTransformPoint(worldPosition);
+                    addedPoint = true;
+                }
+            }
 
-					// slightly offset positionif there is a closed loop and the new point is right between the two other points
-					if (isClosed && positions.Length == 3)
-					{
-						positions[positions.Length - 1].y += 0.1f;
-					}
+            return addedPoint;
+        }
 
-					addedPoint = true;
-				}
-			}
+        private static void DrawPointHandle(int controlId, Vector3 position, Quaternion rotation, float size,
+            EventType eventType)
+        {
+            Handles.color = Color.black;
 
-			return addedPoint;
-		}
+            Handles.DrawSolidDisc(position, s_uiNormal, size * 1.4f);
 
-		static void DrawPointHandle(int controlId, Vector3 position, Quaternion rotation, float size, EventType eventType){
-			Handles.color = Color.black;
+            Handles.color = Color.white;
+            Handles.DrawSolidDisc(position, s_uiNormal, size);
+            Handles.CircleHandleCap(controlId, position, rotation, size, eventType);
 
-			Handles.DrawSolidDisc(position, uiNormal, size * 1.4f);
+            Handles.color = Color.black;
+            Handles.DrawSolidDisc(position, s_uiNormal, size * 0.8f);
+        }
 
-			Handles.color = Color.white;
-			Handles.DrawSolidDisc(position, uiNormal, size);
-			Handles.CircleHandleCap(controlId, position, rotation, size, eventType);
+        private static void DrawRemovePointHandle(int controlId, Vector3 position, Quaternion rotation, float size,
+            EventType eventType)
+        {
+            Handles.color = Color.black;
 
-			Handles.color = Color.black;
-			Handles.DrawSolidDisc(position, uiNormal, size * 0.8f);
-		}
+            Handles.DrawSolidDisc(position, s_uiNormal, size * 1.4f);
+            Handles.CircleHandleCap(controlId, position, rotation, size * 1.4f, eventType);
 
-		static void DrawRemovePointHandle(int controlId, Vector3 position, Quaternion rotation, float size, EventType eventType){
-			Handles.color = Color.black;
+            Handles.color = Color.red;
+            Handles.DrawSolidDisc(position, s_uiNormal, size);
 
-			Handles.DrawSolidDisc(position, uiNormal, size * 1.4f);
-			Handles.CircleHandleCap(controlId, position, rotation,  size * 1.4f, eventType);
+            Handles.color = Color.black;
+            Handles.DrawSolidDisc(position, s_uiNormal, size * 0.8f);
+        }
 
-			Handles.color = Color.red;
-			Handles.DrawSolidDisc(position, uiNormal, size);
+        private static void DrawAddPointHandle(int controlId, Vector3 position, Quaternion rotation, float size,
+            EventType eventType)
+        {
+            Handles.color = Color.black;
+            Handles.CircleHandleCap(controlId, position, rotation, size, eventType);
+            Handles.DrawSolidDisc(position, s_uiNormal, size);
 
-			Handles.color = Color.black;
-			Handles.DrawSolidDisc(position, uiNormal, size * 0.8f);
-		}
+            Handles.color = Color.white;
+            Handles.DrawSolidDisc(position, s_uiNormal, size * 0.2f);
+        }
 
-		static void DrawAddPointHandle(int controlId, Vector3 position, Quaternion rotation, float size, EventType eventType){
-			Handles.color = Color.black;
-			Handles.CircleHandleCap(controlId, position, rotation, size, eventType);
-			Handles.DrawSolidDisc(position, uiNormal, size);
+        static void DrawPlus(Vector3 position, float size)
+        {
+            s_tmpUiPos.x = position.x - size * 0.5f;
+            s_tmpUiPos.y = position.y;
+            s_tmpUiPos.z = position.z;
 
-			Handles.color = Color.white;
-			Handles.DrawSolidDisc(position, uiNormal, size * 0.2f);
+            s_tmpUiPos2.x = position.x + size * 0.5f;
+            s_tmpUiPos2.y = position.y;
+            s_tmpUiPos2.z = position.z;
 
-		}
+            Handles.DrawLine(s_tmpUiPos, s_tmpUiPos2);
 
-		static void DrawPlus(Vector3 position, float size)
-		{
-			tmpUiPos.x = position.x - size * 0.5f;
-			tmpUiPos.y = position.y;
-			tmpUiPos.z = position.z;
+            s_tmpUiPos.x = position.x;
+            s_tmpUiPos.y = position.y - size * 0.5f;
 
-			tmpUiPos2.x = position.x + size * 0.5f;
-			tmpUiPos2.y = position.y;
-			tmpUiPos2.z = position.z;
+            s_tmpUiPos2.x = position.x;
+            s_tmpUiPos2.y = position.y + size * 0.5f;
 
-			Handles.DrawLine(tmpUiPos, tmpUiPos2);
-
-			tmpUiPos.x = position.x;
-			tmpUiPos.y = position.y - size * 0.5f;
-
-			tmpUiPos2.x = position.x;
-			tmpUiPos2.y = position.y + size * 0.5f;
-
-			Handles.DrawLine(tmpUiPos, tmpUiPos2);
-		}
-	}
+            Handles.DrawLine(s_tmpUiPos, s_tmpUiPos2);
+        }
+    }
 }

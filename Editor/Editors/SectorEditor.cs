@@ -1,6 +1,6 @@
-﻿using UnityEditor;
+﻿using UIShapeKit.Shapes;
+using UnityEditor;
 using UnityEditor.UI;
-using Sector = UIShapeKit.Shapes.Sector;
 
 namespace UIShapeKit.Editor.Editors
 {

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UIShapeKit.Prop;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace UIShapeKit.ShapeUtils
@@ -79,7 +80,7 @@ namespace UIShapeKit.ShapeUtils
 
 		public static void AddRectRing(
 			ref VertexHelper vh,
-			GeoUtils.OutlineProperties OutlineProperties,
+			OutlineProperties OutlineProperties,
 			Vector2 center,
 			float width,
 			float height,
@@ -89,11 +90,11 @@ namespace UIShapeKit.ShapeUtils
 		) {
 			byte alpha = color.a;
 
-			float fullWidth = width + OutlineProperties.GetOuterDistace() * 2.0f;
-			float fullHeight = height + OutlineProperties.GetOuterDistace() * 2.0f;
+			float fullWidth = width + OutlineProperties.GetOuterDistance() * 2.0f;
+			float fullHeight = height + OutlineProperties.GetOuterDistance() * 2.0f;
 
-			width += OutlineProperties.GetCenterDistace() * 2.0f;
-			height += OutlineProperties.GetCenterDistace() * 2.0f;
+			width += OutlineProperties.GetCenterDistance() * 2.0f;
+			height += OutlineProperties.GetCenterDistance() * 2.0f;
 
 			float halfLineWeightOffset = OutlineProperties.HalfLineWeight * 2.0f + edgeGradientData.ShadowOffset;
 			float halfLineWeightInnerOffset = halfLineWeightOffset * edgeGradientData.InnerScale;

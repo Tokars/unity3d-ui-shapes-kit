@@ -13,8 +13,8 @@ namespace UIShapeKit.Editor.Editors
     {
         private Line _linearLine;
 
-        PointsList.PointListsProperties pointListsProperties;
-        RectTransform rectTransform;
+        private PointsList.PointListsProperties _pointListsProperties;
+        private RectTransform _rectTransform;
 
         protected SerializedProperty materialProp;
         protected SerializedProperty spriteProp;
@@ -31,8 +31,8 @@ namespace UIShapeKit.Editor.Editors
         {
             _linearLine = (Line)target;
 
-            rectTransform = _linearLine.rectTransform;
-            pointListsProperties = _linearLine.pointListsProperties;
+            _rectTransform = _linearLine.rectTransform;
+            _pointListsProperties = _linearLine.pointListsProperties;
 
             materialProp = serializedObject.FindProperty("m_Material");
             spriteProp = serializedObject.FindProperty("Sprite");
@@ -72,34 +72,27 @@ namespace UIShapeKit.Editor.Editors
             serializedObject.ApplyModifiedProperties();
         }
 
-        void OnSceneGUI()
+        private void OnSceneGUI()
         {
             Undo.RecordObject(_linearLine, "LinarLine");
 
-            for (int i = 0; i < pointListsProperties.PointListProperties.Length; i++)
+            for (int i = 0; i < _pointListsProperties.pointListProperties.Length; i++)
             {
                 if (
-                    pointListsProperties.PointListProperties[i].ShowHandles &&
-                    pointListsProperties.PointListProperties[i].GeneratorData.Generator ==
+                    _pointListsProperties.pointListProperties[i].showHandles &&
+                    _pointListsProperties.pointListProperties[i].generatorData.generator ==
                     PointsList.PointListGeneratorData.Generators.Custom
                 )
                 {
                     if (PointListDrawer.Draw(
-                            ref pointListsProperties.PointListProperties[i].Positions,
-                            rectTransform,
-                            _linearLine.lineProperties.Closed,
+                            ref _pointListsProperties.pointListProperties[i].positions,
+                            _rectTransform,
+                            _linearLine.lineProperties.closed,
                             2
                         ))
                         _linearLine.ForceMeshUpdate();
                 }
             }
-
-
-            // if (!Application.isPlaying && linearLine.enabled)
-            // {
-            // 	linearLine.enabled = false;
-            // 	linearLine.enabled = true;
-            // }
         }
     }
 }

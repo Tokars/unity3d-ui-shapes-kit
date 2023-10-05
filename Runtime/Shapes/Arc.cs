@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UIShapeKit.Prop;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace UIShapeKit.Shapes
@@ -6,14 +7,14 @@ namespace UIShapeKit.Shapes
     [AddComponentMenu("UI/Shapes/Arc", 50), RequireComponent(typeof(CanvasRenderer))]
     public class Arc : MaskableGraphic, IShape
     {
-        [SerializeField] public GeoUtils.ShapeProperties shapeProperties = new();
+        [SerializeField] public ShapeProperties shapeProperties = new();
         [SerializeField] public ShapeUtils.Ellipses.EllipseProperties ellipseProperties = new();
         [SerializeField] public ShapeUtils.Arcs.ArcProperties arcProperties = new();
         [SerializeField] public ShapeUtils.Lines.LineProperties lineProperties = new();
         [SerializeField] public ShapeUtils.PointsList.PointListProperties pointListProperties = new();
-        [SerializeField]public GeoUtils.OutlineProperties outlineProperties = new();
-        [SerializeField]public GeoUtils.ShadowsProperties shadowProperties = new();
-        [SerializeField]public GeoUtils.AntiAliasingProperties antiAliasingProperties = new();
+        [SerializeField] public OutlineProperties outlineProperties = new();
+        [SerializeField] public ShadowsProperties shadowProperties = new();
+        [SerializeField] public AntiAliasingProperties antiAliasingProperties = new();
 
 
         private ShapeUtils.PointsList.PointsData _pointsData = new();
@@ -23,18 +24,18 @@ namespace UIShapeKit.Shapes
 
         protected override void OnEnable()
         {
-            pointListProperties.GeneratorData.Generator =
+            pointListProperties.generatorData.generator =
                 ShapeUtils.PointsList.PointListGeneratorData.Generators.Round;
 
-            pointListProperties.GeneratorData.Center.x = 0.0f;
-            pointListProperties.GeneratorData.Center.y = 0.0f;
+            pointListProperties.generatorData.center.x = 0.0f;
+            pointListProperties.generatorData.center.y = 0.0f;
 
             base.OnEnable();
         }
 
         public void ForceMeshUpdate()
         {
-            pointListProperties.GeneratorData.NeedsUpdate = true;
+            pointListProperties.generatorData.needsUpdate = true;
             _pointsData.NeedsUpdate = true;
 
             SetVerticesDirty();
@@ -68,32 +69,32 @@ namespace UIShapeKit.Shapes
                 ellipseProperties
             );
 
-            pointListProperties.GeneratorData.Width = _radius.x * 2.0f;
-            pointListProperties.GeneratorData.Height = _radius.y * 2.0f;
+            pointListProperties.generatorData.width = _radius.x * 2.0f;
+            pointListProperties.generatorData.height = _radius.y * 2.0f;
 
-            ellipseProperties.UpdateAdjusted(_radius, outlineProperties.GetOuterDistace());
-            arcProperties.UpdateAdjusted(ellipseProperties.AdjustedResolution, ellipseProperties.BaseAngle);
+            ellipseProperties.UpdateAdjusted(_radius, outlineProperties.GetOuterDistance());
+            arcProperties.UpdateAdjusted(ellipseProperties.AdjustedResolution, ellipseProperties.baseAngle);
             antiAliasingProperties.UpdateAdjusted(canvas);
 
-            pointListProperties.GeneratorData.Resolution = ellipseProperties.AdjustedResolution * 2;
-            pointListProperties.GeneratorData.Length = arcProperties.Length;
+            pointListProperties.generatorData.resolution = ellipseProperties.AdjustedResolution * 2;
+            pointListProperties.generatorData.length = arcProperties.Length;
 
             switch (arcProperties.Direction)
             {
                 case ShapeUtils.Arcs.ArcProperties.ArcDirection.Forward:
-                    pointListProperties.GeneratorData.Direction = 1.0f;
-                    pointListProperties.GeneratorData.FloatStartOffset = ellipseProperties.BaseAngle * 0.5f;
+                    pointListProperties.generatorData.direction = 1.0f;
+                    pointListProperties.generatorData.floatStartOffset = ellipseProperties.baseAngle * 0.5f;
                     break;
 
                 case ShapeUtils.Arcs.ArcProperties.ArcDirection.Centered:
-                    pointListProperties.GeneratorData.Direction = -1.0f;
-                    pointListProperties.GeneratorData.FloatStartOffset =
-                        ellipseProperties.BaseAngle * 0.5f + (arcProperties.Length * 0.5f);
+                    pointListProperties.generatorData.direction = -1.0f;
+                    pointListProperties.generatorData.floatStartOffset =
+                        ellipseProperties.baseAngle * 0.5f + (arcProperties.Length * 0.5f);
                     break;
 
                 case ShapeUtils.Arcs.ArcProperties.ArcDirection.Backward:
-                    pointListProperties.GeneratorData.Direction = -1.0f;
-                    pointListProperties.GeneratorData.FloatStartOffset = ellipseProperties.BaseAngle * 0.5f;
+                    pointListProperties.generatorData.direction = -1.0f;
+                    pointListProperties.generatorData.floatStartOffset = ellipseProperties.baseAngle * 0.5f;
                     break;
             }
 
@@ -116,25 +117,25 @@ namespace UIShapeKit.Shapes
                 // use segment if LineWeight is overshooting the center
                 if (
                     (
-                        outlineProperties.Type == GeoUtils.OutlineProperties.LineType.Center ||
-                        outlineProperties.Type == GeoUtils.OutlineProperties.LineType.Inner
+                        outlineProperties.type == OutlineProperties.LineType.Center ||
+                        outlineProperties.type == OutlineProperties.LineType.Inner
                     ) &&
                     (
-                        _radius.x + outlineProperties.GetInnerDistace() < 0.0f ||
-                        _radius.y + outlineProperties.GetInnerDistace() < 0.0f
+                        _radius.x + outlineProperties.GetInnerDistance() < 0.0f ||
+                        _radius.y + outlineProperties.GetInnerDistance() < 0.0f
                     )
                 )
                 {
-                    if (outlineProperties.Type == GeoUtils.OutlineProperties.LineType.Center)
+                    if (outlineProperties.type == OutlineProperties.LineType.Center)
                     {
                         _radius *= 2.0f;
                     }
 
-                    for (int i = 0; i < shadowProperties.Shadows.Length; i++)
+                    for (int i = 0; i < shadowProperties.shadows.Length; i++)
                     {
                         _edgeGradientData.SetActiveData(
-                            1.0f - shadowProperties.Shadows[i].Softness,
-                            shadowProperties.Shadows[i].Size,
+                            1.0f - shadowProperties.shadows[i].softness,
+                            shadowProperties.shadows[i].size,
                             antiAliasingProperties.Adjusted
                         );
 
@@ -144,7 +145,7 @@ namespace UIShapeKit.Shapes
                             _radius,
                             ellipseProperties,
                             arcProperties,
-                            shadowProperties.Shadows[i].Color,
+                            shadowProperties.shadows[i].color,
                             GeoUtils.ZeroV2,
                             ref _unitPositionData,
                             _edgeGradientData
@@ -153,15 +154,15 @@ namespace UIShapeKit.Shapes
                 }
                 else
                 {
-                    for (int i = 0; i < shadowProperties.Shadows.Length; i++)
+                    for (int i = 0; i < shadowProperties.shadows.Length; i++)
                     {
                         _edgeGradientData.SetActiveData(
-                            1.0f - shadowProperties.Shadows[i].Softness,
-                            shadowProperties.Shadows[i].Size,
+                            1.0f - shadowProperties.shadows[i].softness,
+                            shadowProperties.shadows[i].size,
                             antiAliasingProperties.Adjusted
                         );
 
-                        if (lineProperties.LineCap == ShapeUtils.Lines.LineProperties.LineCapTypes.Close)
+                        if (lineProperties.lineCap == ShapeUtils.Lines.LineProperties.LineCapTypes.Close)
                         {
                             ShapeUtils.Arcs.AddArcRing(
                                 ref vh,
@@ -170,7 +171,7 @@ namespace UIShapeKit.Shapes
                                 ellipseProperties,
                                 arcProperties,
                                 outlineProperties,
-                                shadowProperties.Shadows[i].Color,
+                                shadowProperties.shadows[i].color,
                                 GeoUtils.ZeroV2,
                                 ref _unitPositionData,
                                 _edgeGradientData
@@ -184,7 +185,7 @@ namespace UIShapeKit.Shapes
                                 pointListProperties,
                                 shadowProperties.GetCenterOffset(pixelRect.center, i),
                                 outlineProperties,
-                                shadowProperties.Shadows[i].Color,
+                                shadowProperties.shadows[i].color,
                                 GeoUtils.ZeroV2,
                                 ref _pointsData,
                                 _edgeGradientData
@@ -195,7 +196,7 @@ namespace UIShapeKit.Shapes
             }
 
             // fill
-            if (shadowProperties.ShowShape)
+            if (shadowProperties.showShape)
             {
                 if (antiAliasingProperties.Adjusted > 0.0f)
                 {
@@ -213,16 +214,16 @@ namespace UIShapeKit.Shapes
                 // use segment if LineWeight is overshooting the center
                 if (
                     (
-                        outlineProperties.Type == GeoUtils.OutlineProperties.LineType.Center ||
-                        outlineProperties.Type == GeoUtils.OutlineProperties.LineType.Inner
+                        outlineProperties.type == OutlineProperties.LineType.Center ||
+                        outlineProperties.type == OutlineProperties.LineType.Inner
                     ) &&
                     (
-                        _radius.x + outlineProperties.GetInnerDistace() < 0.0f ||
-                        _radius.y + outlineProperties.GetInnerDistace() < 0.0f
+                        _radius.x + outlineProperties.GetInnerDistance() < 0.0f ||
+                        _radius.y + outlineProperties.GetInnerDistance() < 0.0f
                     )
                 )
                 {
-                    if (outlineProperties.Type == GeoUtils.OutlineProperties.LineType.Center)
+                    if (outlineProperties.type == OutlineProperties.LineType.Center)
                     {
                         _radius.x *= 2.0f;
                         _radius.y *= 2.0f;
@@ -234,7 +235,7 @@ namespace UIShapeKit.Shapes
                         _radius,
                         ellipseProperties,
                         arcProperties,
-                        shapeProperties.FillColor,
+                        shapeProperties.fillColor,
                         GeoUtils.ZeroV2,
                         ref _unitPositionData,
                         _edgeGradientData
@@ -242,7 +243,7 @@ namespace UIShapeKit.Shapes
                 }
                 else
                 {
-                    if (lineProperties.LineCap == ShapeUtils.Lines.LineProperties.LineCapTypes.Close)
+                    if (lineProperties.lineCap == ShapeUtils.Lines.LineProperties.LineCapTypes.Close)
                     {
                         ShapeUtils.Arcs.AddArcRing(
                             ref vh,
@@ -251,7 +252,7 @@ namespace UIShapeKit.Shapes
                             ellipseProperties,
                             arcProperties,
                             outlineProperties,
-                            shapeProperties.FillColor,
+                            shapeProperties.fillColor,
                             GeoUtils.ZeroV2,
                             ref _unitPositionData,
                             _edgeGradientData
@@ -265,7 +266,7 @@ namespace UIShapeKit.Shapes
                             pointListProperties,
                             pixelRect.center,
                             outlineProperties,
-                            shapeProperties.FillColor,
+                            shapeProperties.fillColor,
                             GeoUtils.ZeroV2,
                             ref _pointsData,
                             _edgeGradientData

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UIShapeKit.Prop;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace UIShapeKit.Shapes
@@ -6,11 +7,11 @@ namespace UIShapeKit.Shapes
     [AddComponentMenu("UI/Shapes/Sector", 50), RequireComponent(typeof(CanvasRenderer))]
     public class Sector : MaskableGraphic, IShape
     {
-        [SerializeField] public GeoUtils.ShapeProperties shapeProperties = new();
+        [SerializeField] public ShapeProperties shapeProperties = new();
         [SerializeField] public ShapeUtils.Ellipses.EllipseProperties ellipseProperties = new();
         [SerializeField] public ShapeUtils.Arcs.ArcProperties arcProperties = new();
-        [SerializeField] public GeoUtils.ShadowsProperties shadowProperties = new();
-        [SerializeField] public GeoUtils.AntiAliasingProperties antiAliasingProperties = new();
+        [SerializeField] public ShadowsProperties shadowProperties = new();
+        [SerializeField] public AntiAliasingProperties antiAliasingProperties = new();
 
         private GeoUtils.UnitPositionData _unitPositionData;
         private GeoUtils.EdgeGradientData _edgeGradientData;
@@ -48,18 +49,18 @@ namespace UIShapeKit.Shapes
             );
 
             ellipseProperties.UpdateAdjusted(_radius, 0.0f);
-            arcProperties.UpdateAdjusted(ellipseProperties.AdjustedResolution, ellipseProperties.BaseAngle);
+            arcProperties.UpdateAdjusted(ellipseProperties.AdjustedResolution, ellipseProperties.baseAngle);
             antiAliasingProperties.UpdateAdjusted(canvas);
             shadowProperties.UpdateAdjusted();
 
             // shadows
             if (shadowProperties.ShadowsEnabled)
             {
-                for (int i = 0; i < shadowProperties.Shadows.Length; i++)
+                for (int i = 0; i < shadowProperties.shadows.Length; i++)
                 {
                     _edgeGradientData.SetActiveData(
-                        1.0f - shadowProperties.Shadows[i].Softness,
-                        shadowProperties.Shadows[i].Size,
+                        1.0f - shadowProperties.shadows[i].softness,
+                        shadowProperties.shadows[i].size,
                         antiAliasingProperties.Adjusted
                     );
 
@@ -69,7 +70,7 @@ namespace UIShapeKit.Shapes
                         _radius,
                         ellipseProperties,
                         arcProperties,
-                        shadowProperties.Shadows[i].Color,
+                        shadowProperties.shadows[i].color,
                         GeoUtils.ZeroV2,
                         ref _unitPositionData,
                         _edgeGradientData
@@ -78,7 +79,7 @@ namespace UIShapeKit.Shapes
             }
 
             // fill
-            if (shadowProperties.ShowShape)
+            if (shadowProperties.showShape)
             {
                 if (antiAliasingProperties.Adjusted > 0.0f)
                 {
@@ -99,7 +100,7 @@ namespace UIShapeKit.Shapes
                     _radius,
                     ellipseProperties,
                     arcProperties,
-                    shapeProperties.FillColor,
+                    shapeProperties.fillColor,
                     GeoUtils.ZeroV2,
                     ref _unitPositionData,
                     _edgeGradientData
