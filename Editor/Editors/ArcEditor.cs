@@ -1,14 +1,16 @@
-﻿using UIShapeKit.ShapeUtils;
+﻿using UIShapeKit.Shapes;
+using UIShapeKit.ShapeUtils;
 using UnityEditor;
 using UnityEditor.UI;
-using Arc = UIShapeKit.Shapes.Arc;
 
 namespace UIShapeKit.Editor.Editors
 {
 	[CustomEditor(typeof(Arc))]
 	[CanEditMultipleObjects]
 	public class ArcEditor : GraphicEditor
-	{
+    {
+
+        private Arc _arc;
 		protected SerializedProperty materialProp;
 		protected SerializedProperty raycastTargetProp;
 
@@ -25,17 +27,21 @@ namespace UIShapeKit.Editor.Editors
 
 		protected override void OnEnable()
 		{
+            
+            _arc = (Arc)target;
+
 			materialProp = serializedObject.FindProperty("m_Material");
 			raycastTargetProp = serializedObject.FindProperty("m_RaycastTarget");
 
-			shapePropertiesProp = serializedObject.FindProperty("ShapeProperties");
-			ellipsePropertiesProp = serializedObject.FindProperty("EllipseProperties");
-			arcPropertiesProp = serializedObject.FindProperty("ArcProperties");
-			outlinePropertiesProp = serializedObject.FindProperty("OutlineProperties");
-			shadowPropertiesProp = serializedObject.FindProperty("ShadowProperties");
-			antiAliasingPropertiesProp = serializedObject.FindProperty("AntiAliasingProperties");
+            
+            shapePropertiesProp = serializedObject.FindProperty(nameof(_arc.shapeProperties));
+			ellipsePropertiesProp = serializedObject.FindProperty(nameof(_arc.ellipseProperties));
+			arcPropertiesProp = serializedObject.FindProperty(nameof(_arc.arcProperties));
+			outlinePropertiesProp = serializedObject.FindProperty(nameof(_arc.outlineProperties));
+			shadowPropertiesProp = serializedObject.FindProperty(nameof(_arc.shadowProperties));
+			antiAliasingPropertiesProp = serializedObject.FindProperty(nameof(_arc.antiAliasingProperties));
 
-			lineCapProp = serializedObject.FindProperty("LineProperties").FindPropertyRelative("LineCap");
+			lineCapProp = serializedObject.FindProperty(nameof(_arc.lineProperties)).FindPropertyRelative("LineCap");
 			CapRoundingPropertiesProp = serializedObject.FindProperty("LineProperties").FindPropertyRelative("RoundedCapResolution");
 		}
 

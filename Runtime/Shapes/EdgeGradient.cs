@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace UIShapeKit.Shapes
 {
 
-	[AddComponentMenu("UI/Shapes/Edge Gradient", 100)]
+	[AddComponentMenu("UI/Shapes/Edge Gradient", 100), RequireComponent(typeof(CanvasRenderer))]
 	public class EdgeGradient : MaskableGraphic, IShape
 	{
 		public enum Positions

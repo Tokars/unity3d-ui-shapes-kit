@@ -3,289 +3,276 @@ using UnityEngine.UI;
 
 namespace UIShapeKit.Shapes
 {
-	[AddComponentMenu("UI/Shapes/Arc", 50)]
-	public class Arc : MaskableGraphic, IShape
-	{
-		public GeoUtils.ShapeProperties ShapeProperties =
-			new GeoUtils.ShapeProperties();
-
-		public ShapeUtils.Ellipses.EllipseProperties EllipseProperties =
-			new ShapeUtils.Ellipses.EllipseProperties();
-
-		public ShapeUtils.Arcs.ArcProperties ArcProperties = 
-			new ShapeUtils.Arcs.ArcProperties();
-
-		public ShapeUtils.Lines.LineProperties LineProperties =
-			new ShapeUtils.Lines.LineProperties();
-		public ShapeUtils.PointsList.PointListProperties PointListProperties =
-				new ShapeUtils.PointsList.PointListProperties();
-		ShapeUtils.PointsList.PointsData PointsData = new ShapeUtils.PointsList.PointsData();
-
-		public GeoUtils.OutlineProperties OutlineProperties = 
-			new GeoUtils.OutlineProperties();
-
-		public GeoUtils.ShadowsProperties ShadowProperties = new GeoUtils.ShadowsProperties();
-
-		public GeoUtils.AntiAliasingProperties AntiAliasingProperties = 
-			new GeoUtils.AntiAliasingProperties();
+    [AddComponentMenu("UI/Shapes/Arc", 50), RequireComponent(typeof(CanvasRenderer))]
+    public class Arc : MaskableGraphic, IShape
+    {
+        [SerializeField] public GeoUtils.ShapeProperties shapeProperties = new();
+        [SerializeField] public ShapeUtils.Ellipses.EllipseProperties ellipseProperties = new();
+        [SerializeField] public ShapeUtils.Arcs.ArcProperties arcProperties = new();
+        [SerializeField] public ShapeUtils.Lines.LineProperties lineProperties = new();
+        [SerializeField] public ShapeUtils.PointsList.PointListProperties pointListProperties = new();
+        [SerializeField]public GeoUtils.OutlineProperties outlineProperties = new();
+        [SerializeField]public GeoUtils.ShadowsProperties shadowProperties = new();
+        [SerializeField]public GeoUtils.AntiAliasingProperties antiAliasingProperties = new();
 
 
-		GeoUtils.UnitPositionData unitPositionData;
-		GeoUtils.EdgeGradientData edgeGradientData;
-		Vector2 radius = Vector2.one;
+        private ShapeUtils.PointsList.PointsData _pointsData = new();
+        private GeoUtils.UnitPositionData _unitPositionData;
+        private GeoUtils.EdgeGradientData _edgeGradientData;
+        private Vector2 _radius = Vector2.one;
 
-		protected override void OnEnable() {
-			PointListProperties.GeneratorData.Generator =
-				ShapeUtils.PointsList.PointListGeneratorData.Generators.Round;
+        protected override void OnEnable()
+        {
+            pointListProperties.GeneratorData.Generator =
+                ShapeUtils.PointsList.PointListGeneratorData.Generators.Round;
 
-			PointListProperties.GeneratorData.Center.x = 0.0f;
-			PointListProperties.GeneratorData.Center.y = 0.0f;
+            pointListProperties.GeneratorData.Center.x = 0.0f;
+            pointListProperties.GeneratorData.Center.y = 0.0f;
 
-			base.OnEnable();
-		}
+            base.OnEnable();
+        }
 
-		public void ForceMeshUpdate()
-		{
-			PointListProperties.GeneratorData.NeedsUpdate = true;
-			PointsData.NeedsUpdate = true;
+        public void ForceMeshUpdate()
+        {
+            pointListProperties.GeneratorData.NeedsUpdate = true;
+            _pointsData.NeedsUpdate = true;
 
-			SetVerticesDirty();
-			SetMaterialDirty();
-		}
+            SetVerticesDirty();
+            SetMaterialDirty();
+        }
 
-		#if UNITY_EDITOR
-		protected override void OnValidate()
-		{
-			EllipseProperties.OnCheck();
-			OutlineProperties.OnCheck();
-			AntiAliasingProperties.OnCheck();
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            ellipseProperties.OnCheck();
+            outlineProperties.OnCheck();
+            antiAliasingProperties.OnCheck();
 
-			ForceMeshUpdate();
-		}
-		#endif
+            ForceMeshUpdate();
+        }
+#endif
 
-		protected override void OnPopulateMesh(VertexHelper vh)	{
-			vh.Clear();
+        protected override void OnPopulateMesh(VertexHelper vh)
+        {
+            vh.Clear();
 
-			Rect pixelRect = RectTransformUtility.PixelAdjustRect(rectTransform, canvas);
+            Rect pixelRect = RectTransformUtility.PixelAdjustRect(rectTransform, canvas);
 
-			OutlineProperties.UpdateAdjusted();
-			ShadowProperties.UpdateAdjusted();
+            outlineProperties.UpdateAdjusted();
+            shadowProperties.UpdateAdjusted();
 
-			ShapeUtils.Ellipses.SetRadius(
-				ref radius,
-				pixelRect.width,
-				pixelRect.height,
-				EllipseProperties
-			);
+            ShapeUtils.Ellipses.SetRadius(
+                ref _radius,
+                pixelRect.width,
+                pixelRect.height,
+                ellipseProperties
+            );
 
-			PointListProperties.GeneratorData.Width = radius.x * 2.0f;
-			PointListProperties.GeneratorData.Height = radius.y * 2.0f;
+            pointListProperties.GeneratorData.Width = _radius.x * 2.0f;
+            pointListProperties.GeneratorData.Height = _radius.y * 2.0f;
 
-			EllipseProperties.UpdateAdjusted(radius, OutlineProperties.GetOuterDistace());
-			ArcProperties.UpdateAdjusted(EllipseProperties.AdjustedResolution, EllipseProperties.BaseAngle);
-			AntiAliasingProperties.UpdateAdjusted(canvas);
+            ellipseProperties.UpdateAdjusted(_radius, outlineProperties.GetOuterDistace());
+            arcProperties.UpdateAdjusted(ellipseProperties.AdjustedResolution, ellipseProperties.BaseAngle);
+            antiAliasingProperties.UpdateAdjusted(canvas);
 
-			PointListProperties.GeneratorData.Resolution = EllipseProperties.AdjustedResolution * 2;
-			PointListProperties.GeneratorData.Length = ArcProperties.Length;
+            pointListProperties.GeneratorData.Resolution = ellipseProperties.AdjustedResolution * 2;
+            pointListProperties.GeneratorData.Length = arcProperties.Length;
 
-			switch (ArcProperties.Direction) {
-				case ShapeUtils.Arcs.ArcProperties.ArcDirection.Forward:
-					PointListProperties.GeneratorData.Direction = 1.0f;
-					PointListProperties.GeneratorData.FloatStartOffset = EllipseProperties.BaseAngle * 0.5f;
-					break;
+            switch (arcProperties.Direction)
+            {
+                case ShapeUtils.Arcs.ArcProperties.ArcDirection.Forward:
+                    pointListProperties.GeneratorData.Direction = 1.0f;
+                    pointListProperties.GeneratorData.FloatStartOffset = ellipseProperties.BaseAngle * 0.5f;
+                    break;
 
-				case ShapeUtils.Arcs.ArcProperties.ArcDirection.Centered:
-					PointListProperties.GeneratorData.Direction = -1.0f;
-					PointListProperties.GeneratorData.FloatStartOffset = EllipseProperties.BaseAngle * 0.5f + (ArcProperties.Length * 0.5f);
-					break;
+                case ShapeUtils.Arcs.ArcProperties.ArcDirection.Centered:
+                    pointListProperties.GeneratorData.Direction = -1.0f;
+                    pointListProperties.GeneratorData.FloatStartOffset =
+                        ellipseProperties.BaseAngle * 0.5f + (arcProperties.Length * 0.5f);
+                    break;
 
-				case ShapeUtils.Arcs.ArcProperties.ArcDirection.Backward:
-					PointListProperties.GeneratorData.Direction = -1.0f;
-					PointListProperties.GeneratorData.FloatStartOffset = EllipseProperties.BaseAngle * 0.5f;
-					break;
-			}
+                case ShapeUtils.Arcs.ArcProperties.ArcDirection.Backward:
+                    pointListProperties.GeneratorData.Direction = -1.0f;
+                    pointListProperties.GeneratorData.FloatStartOffset = ellipseProperties.BaseAngle * 0.5f;
+                    break;
+            }
 
-			// shadows
-			if (ShadowProperties.ShadowsEnabled)
-			{
-				if (AntiAliasingProperties.Adjusted > 0.0f)
-				{
-					edgeGradientData.SetActiveData(
-						1.0f,
-						0.0f,
-						AntiAliasingProperties.Adjusted
-					);
-				}
-				else
-				{
-					edgeGradientData.Reset();
-				}
+            // shadows
+            if (shadowProperties.ShadowsEnabled)
+            {
+                if (antiAliasingProperties.Adjusted > 0.0f)
+                {
+                    _edgeGradientData.SetActiveData(
+                        1.0f,
+                        0.0f,
+                        antiAliasingProperties.Adjusted
+                    );
+                }
+                else
+                {
+                    _edgeGradientData.Reset();
+                }
 
-				// use segment if LineWeight is overshooting the center
-				if (
-					(
-						OutlineProperties.Type == GeoUtils.OutlineProperties.LineType.Center ||
-						OutlineProperties.Type == GeoUtils.OutlineProperties.LineType.Inner
-					) &&
-					(
-						radius.x + OutlineProperties.GetInnerDistace() < 0.0f ||
-						radius.y + OutlineProperties.GetInnerDistace() < 0.0f
-					)
-				) {
-					if (OutlineProperties.Type == GeoUtils.OutlineProperties.LineType.Center)
-					{
-						radius *= 2.0f;
-					}
+                // use segment if LineWeight is overshooting the center
+                if (
+                    (
+                        outlineProperties.Type == GeoUtils.OutlineProperties.LineType.Center ||
+                        outlineProperties.Type == GeoUtils.OutlineProperties.LineType.Inner
+                    ) &&
+                    (
+                        _radius.x + outlineProperties.GetInnerDistace() < 0.0f ||
+                        _radius.y + outlineProperties.GetInnerDistace() < 0.0f
+                    )
+                )
+                {
+                    if (outlineProperties.Type == GeoUtils.OutlineProperties.LineType.Center)
+                    {
+                        _radius *= 2.0f;
+                    }
 
-					for (int i = 0; i < ShadowProperties.Shadows.Length; i++)
-					{
-						edgeGradientData.SetActiveData(
-							1.0f - ShadowProperties.Shadows[i].Softness,
-							ShadowProperties.Shadows[i].Size,
-							AntiAliasingProperties.Adjusted
-						);
+                    for (int i = 0; i < shadowProperties.Shadows.Length; i++)
+                    {
+                        _edgeGradientData.SetActiveData(
+                            1.0f - shadowProperties.Shadows[i].Softness,
+                            shadowProperties.Shadows[i].Size,
+                            antiAliasingProperties.Adjusted
+                        );
 
-						ShapeUtils.Arcs.AddSegment(
-							ref vh,
-							ShadowProperties.GetCenterOffset(pixelRect.center, i),
-							radius,
-							EllipseProperties,
-							ArcProperties,
-							ShadowProperties.Shadows[i].Color,
-							GeoUtils.ZeroV2,
-							ref unitPositionData,
-							edgeGradientData
-						);
-					}
+                        ShapeUtils.Arcs.AddSegment(
+                            ref vh,
+                            shadowProperties.GetCenterOffset(pixelRect.center, i),
+                            _radius,
+                            ellipseProperties,
+                            arcProperties,
+                            shadowProperties.Shadows[i].Color,
+                            GeoUtils.ZeroV2,
+                            ref _unitPositionData,
+                            _edgeGradientData
+                        );
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < shadowProperties.Shadows.Length; i++)
+                    {
+                        _edgeGradientData.SetActiveData(
+                            1.0f - shadowProperties.Shadows[i].Softness,
+                            shadowProperties.Shadows[i].Size,
+                            antiAliasingProperties.Adjusted
+                        );
 
-				}
-				else
-				{
-					for (int i = 0; i < ShadowProperties.Shadows.Length; i++)
-					{
-						edgeGradientData.SetActiveData(
-							1.0f - ShadowProperties.Shadows[i].Softness,
-							ShadowProperties.Shadows[i].Size,
-							AntiAliasingProperties.Adjusted
-						);
+                        if (lineProperties.LineCap == ShapeUtils.Lines.LineProperties.LineCapTypes.Close)
+                        {
+                            ShapeUtils.Arcs.AddArcRing(
+                                ref vh,
+                                shadowProperties.GetCenterOffset(pixelRect.center, i),
+                                _radius,
+                                ellipseProperties,
+                                arcProperties,
+                                outlineProperties,
+                                shadowProperties.Shadows[i].Color,
+                                GeoUtils.ZeroV2,
+                                ref _unitPositionData,
+                                _edgeGradientData
+                            );
+                        }
+                        else
+                        {
+                            ShapeUtils.Lines.AddLine(
+                                ref vh,
+                                lineProperties,
+                                pointListProperties,
+                                shadowProperties.GetCenterOffset(pixelRect.center, i),
+                                outlineProperties,
+                                shadowProperties.Shadows[i].Color,
+                                GeoUtils.ZeroV2,
+                                ref _pointsData,
+                                _edgeGradientData
+                            );
+                        }
+                    }
+                }
+            }
 
-						if (LineProperties.LineCap == ShapeUtils.Lines.LineProperties.LineCapTypes.Close)
-						{
-							ShapeUtils.Arcs.AddArcRing(
-								ref vh,
-								ShadowProperties.GetCenterOffset(pixelRect.center, i),
-								radius,
-								EllipseProperties,
-								ArcProperties,
-								OutlineProperties,
-								ShadowProperties.Shadows[i].Color,
-								GeoUtils.ZeroV2,
-								ref unitPositionData,
-								edgeGradientData
-							);
-						}
-						else
-						{
-							ShapeUtils.Lines.AddLine(
-								ref vh,
-								LineProperties,
-								PointListProperties,
-								ShadowProperties.GetCenterOffset(pixelRect.center, i),
-								OutlineProperties,
-								ShadowProperties.Shadows[i].Color,
-								GeoUtils.ZeroV2,
-								ref PointsData,
-								edgeGradientData
-							);
-						}
-					}
+            // fill
+            if (shadowProperties.ShowShape)
+            {
+                if (antiAliasingProperties.Adjusted > 0.0f)
+                {
+                    _edgeGradientData.SetActiveData(
+                        1.0f,
+                        0.0f,
+                        antiAliasingProperties.Adjusted
+                    );
+                }
+                else
+                {
+                    _edgeGradientData.Reset();
+                }
 
-				}
-			}
+                // use segment if LineWeight is overshooting the center
+                if (
+                    (
+                        outlineProperties.Type == GeoUtils.OutlineProperties.LineType.Center ||
+                        outlineProperties.Type == GeoUtils.OutlineProperties.LineType.Inner
+                    ) &&
+                    (
+                        _radius.x + outlineProperties.GetInnerDistace() < 0.0f ||
+                        _radius.y + outlineProperties.GetInnerDistace() < 0.0f
+                    )
+                )
+                {
+                    if (outlineProperties.Type == GeoUtils.OutlineProperties.LineType.Center)
+                    {
+                        _radius.x *= 2.0f;
+                        _radius.y *= 2.0f;
+                    }
 
-			// fill
-			if (ShadowProperties.ShowShape)
-			{
-				if (AntiAliasingProperties.Adjusted > 0.0f)
-				{
-					edgeGradientData.SetActiveData(
-						1.0f,
-						0.0f,
-						AntiAliasingProperties.Adjusted
-					);
-				}
-				else
-				{
-					edgeGradientData.Reset();
-				}
-
-				// use segment if LineWeight is overshooting the center
-				if (
-					(
-						OutlineProperties.Type == GeoUtils.OutlineProperties.LineType.Center ||
-						OutlineProperties.Type == GeoUtils.OutlineProperties.LineType.Inner
-					) &&
-					(
-						radius.x + OutlineProperties.GetInnerDistace() < 0.0f ||
-						radius.y + OutlineProperties.GetInnerDistace() < 0.0f
-					)
-
-				) {
-					if (OutlineProperties.Type == GeoUtils.OutlineProperties.LineType.Center)
-					{
-						radius.x *= 2.0f;
-						radius.y *= 2.0f;
-					}
-
-					ShapeUtils.Arcs.AddSegment(
-						ref vh,
-						pixelRect.center,
-						radius,
-						EllipseProperties,
-						ArcProperties,
-						ShapeProperties.FillColor,
-						GeoUtils.ZeroV2,
-						ref unitPositionData,
-						edgeGradientData
-					);
-				}
-				else
-				{
-					if (LineProperties.LineCap == ShapeUtils.Lines.LineProperties.LineCapTypes.Close)
-					{
-						ShapeUtils.Arcs.AddArcRing(
-							ref vh,
-							pixelRect.center,
-							radius,
-							EllipseProperties,
-							ArcProperties,
-							OutlineProperties,
-							ShapeProperties.FillColor,
-							GeoUtils.ZeroV2,
-							ref unitPositionData,
-							edgeGradientData
-						);
-					}
-					else
-					{
-						ShapeUtils.Lines.AddLine(
-							ref vh,
-							LineProperties,
-							PointListProperties,
-							pixelRect.center,
-							OutlineProperties,
-							ShapeProperties.FillColor,
-							GeoUtils.ZeroV2,
-							ref PointsData,
-							edgeGradientData
-						);
-					}
-				}
-			}
-
-
-		}
-	}
-
+                    ShapeUtils.Arcs.AddSegment(
+                        ref vh,
+                        pixelRect.center,
+                        _radius,
+                        ellipseProperties,
+                        arcProperties,
+                        shapeProperties.FillColor,
+                        GeoUtils.ZeroV2,
+                        ref _unitPositionData,
+                        _edgeGradientData
+                    );
+                }
+                else
+                {
+                    if (lineProperties.LineCap == ShapeUtils.Lines.LineProperties.LineCapTypes.Close)
+                    {
+                        ShapeUtils.Arcs.AddArcRing(
+                            ref vh,
+                            pixelRect.center,
+                            _radius,
+                            ellipseProperties,
+                            arcProperties,
+                            outlineProperties,
+                            shapeProperties.FillColor,
+                            GeoUtils.ZeroV2,
+                            ref _unitPositionData,
+                            _edgeGradientData
+                        );
+                    }
+                    else
+                    {
+                        ShapeUtils.Lines.AddLine(
+                            ref vh,
+                            lineProperties,
+                            pointListProperties,
+                            pixelRect.center,
+                            outlineProperties,
+                            shapeProperties.FillColor,
+                            GeoUtils.ZeroV2,
+                            ref _pointsData,
+                            _edgeGradientData
+                        );
+                    }
+                }
+            }
+        }
+    }
 }

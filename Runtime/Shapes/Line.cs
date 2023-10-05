@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace UIShapeKit.Shapes
 {
-	[AddComponentMenu("UI/Shapes/Line", 30)]
+	[AddComponentMenu("UI/Shapes/Line", 30), RequireComponent(typeof(CanvasRenderer))]
 	public class Line : MaskableGraphic, IShape
 	{
 		public GeoUtils.ShapeProperties ShapeProperties =

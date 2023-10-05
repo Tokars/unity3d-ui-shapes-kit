@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace UIShapeKit.Shapes
 {
-	[AddComponentMenu("UI/Shapes/Pixel Line", 100)]
+	[AddComponentMenu("UI/Shapes/Pixel Line", 100), RequireComponent(typeof(CanvasRenderer))]
 	public class PixelLine : MaskableGraphic, IShape
 	{
 

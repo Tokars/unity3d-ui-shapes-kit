@@ -1,6 +1,6 @@
-﻿using UnityEditor;
+﻿using UIShapeKit.Shapes;
+using UnityEditor;
 using UnityEditor.UI;
-using Ellipse = UIShapeKit.Shapes.Ellipse;
 
 namespace UIShapeKit.Editor.Editors
 {

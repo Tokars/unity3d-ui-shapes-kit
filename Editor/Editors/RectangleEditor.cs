@@ -1,6 +1,6 @@
-﻿using UnityEditor;
+﻿using UIShapeKit.Shapes;
+using UnityEditor;
 using UnityEditor.UI;
-using Rectangle = UIShapeKit.Shapes.Rectangle;
 
 namespace UIShapeKit.Editor.Editors
 {
