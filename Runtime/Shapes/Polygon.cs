@@ -4,181 +4,167 @@ using UnityEngine.UI;
 
 namespace UIShapeKit.Shapes
 {
+    [AddComponentMenu("UI/Shapes/Polygon", 30), RequireComponent(typeof(CanvasRenderer))]
+    public class Polygon : MaskableGraphic, IShape
+    {
+        [SerializeField] public GeoUtils.ShapeProperties shapeProperties = new();
+        [SerializeField] public PointsList.PointListsProperties pointListsProperties = new();
+        [SerializeField] public Polygons.PolygonProperties polygonProperties = new();
+        [SerializeField] public GeoUtils.ShadowsProperties shadowProperties = new();
+        [SerializeField] public GeoUtils.AntiAliasingProperties antiAliasingProperties = new();
 
-	[AddComponentMenu("UI/Shapes/Polygon", 30), RequireComponent(typeof(CanvasRenderer))]
-	public class Polygon : MaskableGraphic, IShape
-	{
+        private PointsList.PointsData[] _pointsListData = {new()};
+        private GeoUtils.EdgeGradientData _edgeGradientData;
+        private Rect _pixelRect;
 
-		public GeoUtils.ShapeProperties ShapeProperties =
-			new GeoUtils.ShapeProperties();
+        public void ForceMeshUpdate()
+        {
+            if (_pointsListData == null || _pointsListData.Length != pointListsProperties.PointListProperties.Length)
+            {
+                System.Array.Resize(ref _pointsListData, pointListsProperties.PointListProperties.Length);
+            }
 
-		public ShapeUtils.PointsList.PointListsProperties PointListsProperties =
-			new ShapeUtils.PointsList.PointListsProperties();
+            for (int i = 0; i < _pointsListData.Length; i++)
+            {
+                _pointsListData[i].NeedsUpdate = true;
+                pointListsProperties.PointListProperties[i].GeneratorData.NeedsUpdate = true;
+            }
 
-		public ShapeUtils.Polygons.PolygonProperties PolygonProperties =
-			new ShapeUtils.Polygons.PolygonProperties();
+            SetVerticesDirty();
+            SetMaterialDirty();
+        }
 
-		public GeoUtils.ShadowsProperties ShadowProperties = new GeoUtils.ShadowsProperties();
+        protected override void OnEnable()
+        {
+            for (int i = 0; i < _pointsListData.Length; i++)
+            {
+                _pointsListData[i].IsClosed = true;
+            }
 
-		public GeoUtils.AntiAliasingProperties AntiAliasingProperties = 
-			new GeoUtils.AntiAliasingProperties();
+            base.OnEnable();
+        }
 
-		ShapeUtils.PointsList.PointsData[] pointsListData =
-			new PointsList.PointsData[] { new ShapeUtils.PointsList.PointsData()};
-		GeoUtils.EdgeGradientData edgeGradientData;
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            if (_pointsListData == null || _pointsListData.Length != pointListsProperties.PointListProperties.Length)
+            {
+                System.Array.Resize(ref _pointsListData, pointListsProperties.PointListProperties.Length);
+            }
 
-		Rect pixelRect;
-
-		public void ForceMeshUpdate()
-		{
-			if (pointsListData == null || pointsListData.Length != PointListsProperties.PointListProperties.Length)
-			{
-				System.Array.Resize(ref pointsListData, PointListsProperties.PointListProperties.Length);
-			}
-
-			for (int i = 0; i < pointsListData.Length; i++)
-			{
-				pointsListData[i].NeedsUpdate = true;
-				PointListsProperties.PointListProperties[i].GeneratorData.NeedsUpdate = true;
-			}
-				
-			SetVerticesDirty();
-			SetMaterialDirty();
-		}
-
-		protected override void OnEnable()
-		{
-			for (int i = 0; i < pointsListData.Length; i++)
-			{
-				pointsListData[i].IsClosed = true;
-			}
-
-			base.OnEnable();
-		}
-
-		#if UNITY_EDITOR
-		protected override void OnValidate()
-		{
-			if (pointsListData == null || pointsListData.Length != PointListsProperties.PointListProperties.Length)
-			{
-				System.Array.Resize(ref pointsListData, PointListsProperties.PointListProperties.Length);
-			}
-
-			for (int i = 0; i < pointsListData.Length; i++)
-			{
-				pointsListData[i].NeedsUpdate = true;
-				pointsListData[i].IsClosed = true;
-			}
+            for (int i = 0; i < _pointsListData.Length; i++)
+            {
+                _pointsListData[i].NeedsUpdate = true;
+                _pointsListData[i].IsClosed = true;
+            }
 
 
+            antiAliasingProperties.OnCheck();
 
-			AntiAliasingProperties.OnCheck();
+            ForceMeshUpdate();
+        }
+#endif
 
-			ForceMeshUpdate();
-		}
-		#endif
+        protected override void OnPopulateMesh(VertexHelper vh)
+        {
+            vh.Clear();
 
-		protected override void OnPopulateMesh(VertexHelper vh)
-		{
-			vh.Clear();
+            if (_pointsListData == null || _pointsListData.Length != pointListsProperties.PointListProperties.Length)
+            {
+                System.Array.Resize(ref _pointsListData, pointListsProperties.PointListProperties.Length);
 
-			if (pointsListData == null || pointsListData.Length != PointListsProperties.PointListProperties.Length)
-			{
-				System.Array.Resize(ref pointsListData, PointListsProperties.PointListProperties.Length);
+                for (int i = 0; i < _pointsListData.Length; i++)
+                {
+                    _pointsListData[i].NeedsUpdate = true;
+                    _pointsListData[i].IsClosed = true;
+                }
+            }
 
-				for (int i = 0; i < pointsListData.Length; i++)
-				{
-					pointsListData[i].NeedsUpdate = true;
-					pointsListData[i].IsClosed = true;
-				}
-			}
+            _pixelRect = RectTransformUtility.PixelAdjustRect(rectTransform, canvas);
 
-			pixelRect = RectTransformUtility.PixelAdjustRect(rectTransform, canvas);
+            antiAliasingProperties.UpdateAdjusted(canvas);
+            shadowProperties.UpdateAdjusted();
 
-			AntiAliasingProperties.UpdateAdjusted(canvas);
-			ShadowProperties.UpdateAdjusted();
+            for (int i = 0; i < pointListsProperties.PointListProperties.Length; i++)
+            {
+                pointListsProperties.PointListProperties[i].GeneratorData.SkipLastPosition = true;
+                pointListsProperties.PointListProperties[i].SetPoints();
+            }
 
-			for (int i = 0; i < PointListsProperties.PointListProperties.Length; i++)
-			{
-				PointListsProperties.PointListProperties[i].GeneratorData.SkipLastPosition = true;
-				PointListsProperties.PointListProperties[i].SetPoints();
-			}
+            for (int i = 0; i < pointListsProperties.PointListProperties.Length; i++)
+            {
+                if (
+                    pointListsProperties.PointListProperties[i].Positions != null &&
+                    pointListsProperties.PointListProperties[i].Positions.Length > 2
+                )
+                {
+                    polygonProperties.UpdateAdjusted(pointListsProperties.PointListProperties[i]);
 
-			for (int i = 0; i < PointListsProperties.PointListProperties.Length; i++)
-			{
-				if (
-					PointListsProperties.PointListProperties[i].Positions != null &&
-					PointListsProperties.PointListProperties[i].Positions.Length > 2
-				) {
-					PolygonProperties.UpdateAdjusted(PointListsProperties.PointListProperties[i]);
+                    // shadows
+                    if (shadowProperties.ShadowsEnabled)
+                    {
+                        for (int j = 0; j < shadowProperties.Shadows.Length; j++)
+                        {
+                            _edgeGradientData.SetActiveData(
+                                1.0f - shadowProperties.Shadows[j].Softness,
+                                shadowProperties.Shadows[j].Size,
+                                antiAliasingProperties.Adjusted
+                            );
 
-					// shadows
-					if (ShadowProperties.ShadowsEnabled)
-					{
-						for (int j = 0; j < ShadowProperties.Shadows.Length; j++)
-						{
-							edgeGradientData.SetActiveData(
-								1.0f - ShadowProperties.Shadows[j].Softness,
-								ShadowProperties.Shadows[j].Size,
-								AntiAliasingProperties.Adjusted
-							);
-
-							ShapeUtils.Polygons.AddPolygon(
-								ref vh,
-								PolygonProperties,
-								PointListsProperties.PointListProperties[i],
-								ShadowProperties.GetCenterOffset(pixelRect.center, j),
-								ShadowProperties.Shadows[j].Color,
-								GeoUtils.ZeroV2,
-								ref pointsListData[i],
-								edgeGradientData
-							);
-						}
-					}
-				}
-			}
-
-
-			for (int i = 0; i < PointListsProperties.PointListProperties.Length; i++)
-			{
-				if (
-					PointListsProperties.PointListProperties[i].Positions != null &&
-					PointListsProperties.PointListProperties[i].Positions.Length > 2
-				) {
-					PolygonProperties.UpdateAdjusted(PointListsProperties.PointListProperties[i]);
-
-					// fill
-					if (ShadowProperties.ShowShape)
-					{
-						if (AntiAliasingProperties.Adjusted > 0.0f)
-						{
-							edgeGradientData.SetActiveData(
-								1.0f,
-								0.0f,
-								AntiAliasingProperties.Adjusted
-							);
-						}
-						else
-						{
-							edgeGradientData.Reset();
-						}
-
-						ShapeUtils.Polygons.AddPolygon(
-							ref vh,
-							PolygonProperties,
-							PointListsProperties.PointListProperties[i],
-							pixelRect.center,
-							ShapeProperties.FillColor,
-							GeoUtils.ZeroV2,
-							ref pointsListData[i],
-							edgeGradientData
-						);
-					}
-				}
-			}
+                            ShapeUtils.Polygons.AddPolygon(
+                                ref vh,
+                                polygonProperties,
+                                pointListsProperties.PointListProperties[i],
+                                shadowProperties.GetCenterOffset(_pixelRect.center, j),
+                                shadowProperties.Shadows[j].Color,
+                                GeoUtils.ZeroV2,
+                                ref _pointsListData[i],
+                                _edgeGradientData
+                            );
+                        }
+                    }
+                }
+            }
 
 
-		}
+            for (int i = 0; i < pointListsProperties.PointListProperties.Length; i++)
+            {
+                if (
+                    pointListsProperties.PointListProperties[i].Positions != null &&
+                    pointListsProperties.PointListProperties[i].Positions.Length > 2
+                )
+                {
+                    polygonProperties.UpdateAdjusted(pointListsProperties.PointListProperties[i]);
 
-	}
+                    // fill
+                    if (shadowProperties.ShowShape)
+                    {
+                        if (antiAliasingProperties.Adjusted > 0.0f)
+                        {
+                            _edgeGradientData.SetActiveData(
+                                1.0f,
+                                0.0f,
+                                antiAliasingProperties.Adjusted
+                            );
+                        }
+                        else
+                        {
+                            _edgeGradientData.Reset();
+                        }
+
+                        ShapeUtils.Polygons.AddPolygon(
+                            ref vh,
+                            polygonProperties,
+                            pointListsProperties.PointListProperties[i],
+                            _pixelRect.center,
+                            shapeProperties.FillColor,
+                            GeoUtils.ZeroV2,
+                            ref _pointsListData[i],
+                            _edgeGradientData
+                        );
+                    }
+                }
+            }
+        }
+    }
 }

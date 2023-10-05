@@ -3,100 +3,97 @@ using UnityEngine.UI;
 
 namespace UIShapeKit.Shapes
 {
-	[AddComponentMenu("UI/Shapes/Pixel Line", 100), RequireComponent(typeof(CanvasRenderer))]
-	public class PixelLine : MaskableGraphic, IShape
-	{
+    [AddComponentMenu("UI/Shapes/Pixel Line", 100), RequireComponent(typeof(CanvasRenderer))]
+    public class PixelLine : MaskableGraphic, IShape
+    {
+        [SerializeField] public float lineWeight = 1.0f;
+        [SerializeField] public GeoUtils.SnappedPositionAndOrientationProperties snappedProperties = new();
 
-		public float lineWeight = 1.0f;
+        private Vector3 _center = Vector3.zero;
 
-		public GeoUtils.SnappedPositionAndOrientationProperties snappedProperties = new ();
+        public void ForceMeshUpdate()
+        {
+            SetVerticesDirty();
+            SetMaterialDirty();
+        }
 
-		Vector3 center = Vector3.zero;
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            ForceMeshUpdate();
+        }
+#endif
 
-		public void ForceMeshUpdate()
-		{
-			SetVerticesDirty();
-			SetMaterialDirty();
-		}
+        protected override void OnPopulateMesh(VertexHelper vh)
+        {
+            vh.Clear();
 
-		#if UNITY_EDITOR
-		protected override void OnValidate()
-		{
-			ForceMeshUpdate();
-		}
-		#endif
+            Rect pixelRect = RectTransformUtility.PixelAdjustRect(rectTransform, canvas);
 
-		protected override void OnPopulateMesh(VertexHelper vh)
-		{
-			vh.Clear();
+            float pixelSizeScaler = 1.0f;
 
-			Rect pixelRect = RectTransformUtility.PixelAdjustRect(rectTransform, canvas);
+            if (canvas != null)
+            {
+                pixelSizeScaler = 1.0f / canvas.scaleFactor;
+            }
 
-			float pixelSizeScaler = 1.0f;
+            float adjustedLineWeight = lineWeight * pixelSizeScaler;
 
-			if (canvas != null)
-			{
-				pixelSizeScaler = 1.0f / canvas.scaleFactor;
-			}
+            switch (snappedProperties.Position)
+            {
+                case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Center:
+                    _center.x = pixelRect.center.x;
+                    _center.y = pixelRect.center.y;
+                    break;
+                case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Top:
+                    _center.x = pixelRect.center.x;
+                    _center.y = pixelRect.yMax - adjustedLineWeight;
+                    break;
+                case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Bottom:
+                    _center.x = pixelRect.center.x;
+                    _center.y = pixelRect.yMin;
+                    break;
+                case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Left:
+                    _center.x = pixelRect.xMin;
+                    _center.y = pixelRect.center.y;
+                    break;
+                case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Right:
+                    _center.x = pixelRect.xMax;
+                    _center.y = pixelRect.center.y;
+                    break;
+                default:
+                    throw new System.ArgumentOutOfRangeException();
+            }
 
-			float adjustedLineWeight = lineWeight * pixelSizeScaler;
+            float width = 0.0f;
+            float height = 0.0f;
 
-			switch (snappedProperties.Position)
-			{
-				case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Center:
-					center.x = pixelRect.center.x;
-					center.y = pixelRect.center.y;
-					break;
-				case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Top:
-					center.x = pixelRect.center.x;
-					center.y = pixelRect.yMax - adjustedLineWeight;
-					break;
-				case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Bottom:
-					center.x = pixelRect.center.x;
-					center.y = pixelRect.yMin;
-					break;
-				case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Left:
-					center.x = pixelRect.xMin;
-					center.y = pixelRect.center.y;
-					break;
-				case GeoUtils.SnappedPositionAndOrientationProperties.PositionTypes.Right:
-					center.x = pixelRect.xMax;
-					center.y = pixelRect.center.y;
-					break;
-				default:
-					throw new System.ArgumentOutOfRangeException ();
-			}
+            switch (snappedProperties.Orientation)
+            {
+                case GeoUtils.SnappedPositionAndOrientationProperties.OrientationTypes.Horizontal:
+                    width = pixelRect.width;
+                    height = adjustedLineWeight;
 
-			float width = 0.0f;
-			float height = 0.0f;
+                    //				topLeft.x -= width * 0.5f + adjustedLineWeight;
+                    break;
+                case GeoUtils.SnappedPositionAndOrientationProperties.OrientationTypes.Vertical:
+                    width = adjustedLineWeight;
+                    height = pixelRect.height;
 
-			switch (snappedProperties.Orientation)
-			{
-				case GeoUtils.SnappedPositionAndOrientationProperties.OrientationTypes.Horizontal:
-					width = pixelRect.width;
-					height = adjustedLineWeight;
+                    //				topLeft.y += height * 0.5f - adjustedLineWeight;
+                    break;
+                default:
+                    throw new System.ArgumentOutOfRangeException();
+            }
 
-	//				topLeft.x -= width * 0.5f + adjustedLineWeight;
-					break;
-				case GeoUtils.SnappedPositionAndOrientationProperties.OrientationTypes.Vertical:
-					width = adjustedLineWeight;
-					height = pixelRect.height;
-
-	//				topLeft.y += height * 0.5f - adjustedLineWeight;
-					break;
-				default:
-					throw new System.ArgumentOutOfRangeException ();
-			}
-
-			ShapeUtils.Rects.AddRect(
-				ref vh,
-				center,
-				width,
-				height,
-				color,
-				GeoUtils.ZeroV2
-			);
-
-		}
-	}
+            ShapeUtils.Rects.AddRect(
+                ref vh,
+                _center,
+                width,
+                height,
+                color,
+                GeoUtils.ZeroV2
+            );
+        }
+    }
 }
